@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Rocket X — Iniciar sesión</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500&family=Geist+Mono:wght@400&display=swap" rel="stylesheet"/>
+<style>
+:root{--cream:#f5f0e8;--cream2:#ede7d9;--white:#fff;--ink:#1a1612;--muted:#9a9186;--line:#ddd6c8;--serif:'Instrument Serif',serif;--sans:'Geist',sans-serif;--mono:'Geist Mono',monospace;}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--cream);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased;min-height:100vh;display:flex;flex-direction:column;}
+
+/* NAV */
+.auth-nav{display:flex;align-items:center;justify-content:space-between;padding:18px 40px;border-bottom:1px solid var(--line);background:var(--cream);}
+.auth-nav-logo{font-family:var(--serif);font-size:1.1rem;color:var(--ink);text-decoration:none;display:flex;align-items:center;gap:8px;}
+.auth-nav-link{font-size:.78rem;color:var(--muted);text-decoration:none;}
+.auth-nav-link strong{color:var(--ink);}
+.auth-nav-link:hover{color:var(--ink);}
+
+/* ROCKET SVG ANIM */
+.nav-rocket-svg{width:20px;height:20px;animation:rocketBob 2.4s ease-in-out infinite;}
+@keyframes rocketBob{0%,100%{transform:translateY(0);}50%{transform:translateY(-4px);}}
+.nav-rocket-svg .flame{animation:flamePulse .4s ease-in-out infinite alternate;}
+@keyframes flamePulse{from{transform:scaleY(1);}to{transform:scaleY(1.3);}}
+
+/* MAIN */
+.auth-main{flex:1;display:flex;align-items:center;justify-content:center;padding:40px 20px;}
+
+/* CARD */
+.auth-card{background:var(--white);border:1px solid var(--line);border-radius:20px;padding:48px 40px;width:100%;max-width:420px;box-shadow:0 4px 40px rgba(26,22,18,.06);animation:cardIn .6s cubic-bezier(.16,1,.3,1) both;}
+@keyframes cardIn{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+
+.auth-rocket-icon{font-size:2.4rem;display:block;text-align:center;margin-bottom:18px;}
+.auth-title{font-family:var(--serif);font-size:2rem;font-weight:400;letter-spacing:-.02em;text-align:center;margin-bottom:6px;}
+.auth-title em{font-style:italic;color:var(--muted);}
+.auth-sub{font-size:.82rem;color:var(--muted);text-align:center;margin-bottom:32px;line-height:1.5;}
+
+/* FORM */
+.auth-form{display:flex;flex-direction:column;gap:14px;}
+.form-group{display:flex;flex-direction:column;gap:5px;}
+.form-group label{font-family:var(--mono);font-size:.6rem;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);}
+.form-group input{font-family:var(--sans);font-size:.88rem;color:var(--ink);background:var(--cream);border:1px solid var(--line);border-radius:10px;padding:12px 14px;outline:none;width:100%;transition:border-color .2s,box-shadow .2s;}
+.form-group input:focus{border-color:var(--ink);box-shadow:0 0 0 3px rgba(26,22,18,.06);}
+.form-group input::placeholder{color:var(--muted);}
+
+.auth-btn{margin-top:4px;padding:13px;background:var(--ink);color:var(--cream);font-family:var(--sans);font-size:.85rem;font-weight:500;border:none;border-radius:999px;cursor:pointer;transition:opacity .2s,transform .2s;width:100%;letter-spacing:.02em;}
+.auth-btn:hover{opacity:.8;transform:translateY(-1px);}
+.auth-btn-secondary{background:var(--cream2);color:var(--ink);border:1px solid var(--line);}
+
+.auth-divider{display:flex;align-items:center;gap:12px;margin:2px 0;}
+.auth-divider::before,.auth-divider::after{content:'';flex:1;height:1px;background:var(--line);}
+.auth-divider span{font-family:var(--mono);font-size:.6rem;color:var(--muted);letter-spacing:.1em;}
+
+.auth-footer{text-align:center;margin-top:20px;font-size:.8rem;color:var(--muted);}
+.auth-footer a{color:var(--ink);text-decoration:none;font-weight:500;border-bottom:1px solid var(--line);}
+.auth-footer a:hover{border-color:var(--ink);}
+
+.auth-error{background:#fdf0f0;border:1px solid #f5c6c6;color:#c0392b;padding:10px 14px;border-radius:8px;font-size:.8rem;display:none;margin-bottom:4px;}
+.auth-error.show{display:block;}
+.auth-success{background:#f0fdf4;border:1px solid #bbf7d0;color:#166534;padding:10px 14px;border-radius:8px;font-size:.8rem;display:none;margin-bottom:4px;}
+.auth-success.show{display:block;}
+
+@media(max-width:480px){.auth-nav{padding:14px 20px;}.auth-card{padding:32px 20px;}}
+</style>
+</head>
+<body>
+
+<header class="auth-nav">
+  <a href="index.html" class="auth-nav-logo">
+    <svg class="nav-rocket-svg" viewBox="0 0 32 32" fill="none">
+      <path d="M16 3C16 3 22 8 22 17L16 22L10 17C10 8 16 3 16 3Z" fill="#1a1612"/>
+      <circle cx="16" cy="13" r="2.5" fill="#f5f0e8" opacity=".85"/>
+      <path d="M10 17L7 22L12 20Z" fill="#1a1612"/>
+      <path d="M22 17L25 22L20 20Z" fill="#1a1612"/>
+      <ellipse class="flame" cx="16" cy="24" rx="2.5" ry="3.5" fill="#e8a020" opacity=".9"/>
+      <ellipse cx="16" cy="25.5" rx="1.5" ry="2.5" fill="#f5d060" opacity=".8"/>
+    </svg>
+    Rocket X
+  </a>
+  <a href="register.html" class="auth-nav-link">¿No tienes cuenta? <strong>Regístrate gratis →</strong></a>
+</header>
+
+<main class="auth-main">
+  <div class="auth-card">
+    <span class="auth-rocket-icon">🚀</span>
+    <h1 class="auth-title">Bienvenido <em>de vuelta</em></h1>
+    <p class="auth-sub">Inicia sesión en tu cuenta de Rocket X ✨</p>
+
+    <div class="auth-error" id="err"></div>
+    <div class="auth-success" id="ok"></div>
+
+    <form class="auth-form" id="frm" novalidate>
+      <div class="form-group">
+        <label>📧 Correo electrónico</label>
+        <input type="email" id="l-email" placeholder="tu@email.com" autocomplete="email"/>
+      </div>
+      <div class="form-group">
+        <label>🔒 Contraseña</label>
+        <input type="password" id="l-pass" placeholder="••••••••"/>
+      </div>
+      <button type="submit" class="auth-btn" id="btn">Iniciar sesión 🚀</button>
+      <div class="auth-divider"><span>o continúa con</span></div>
+      <button type="button" class="auth-btn auth-btn-secondary">🌐 Google</button>
+    </form>
+
+    <p class="auth-footer">¿No tienes cuenta? <a href="register.html">Créala gratis aquí</a></p>
+  </div>
+</main>
+
+<script src="auth.js"></script>
+<script>
+const err = document.getElementById('err');
+const ok = document.getElementById('ok');
+const btn = document.getElementById('btn');
+
+document.getElementById('frm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+
+  const email = document.getElementById('l-email').value.trim();
+  const pass = document.getElementById('l-pass').value;
+
+  err.classList.remove('show');
+  ok.classList.remove('show');
+
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    err.textContent = '⚠️ Ingresa un correo válido.';
+    err.classList.add('show');
+    return;
+  }
+
+  if (pass.length < 6) {
+    err.textContent = '⚠️ La contraseña debe tener al menos 6 caracteres.';
+    err.classList.add('show');
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = 'Entrando...';
+
+  try {
+    await doLogin();
+  } catch (error) {
+    err.textContent = '❌ ' + error.message;
+    err.classList.add('show');
+    btn.disabled = false;
+    btn.textContent = 'Iniciar sesión 🚀';
+  }
+});
+</script>
+</body>
+</html>

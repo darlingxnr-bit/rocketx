@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Rocket X — Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500;600&family=Geist+Mono:wght@400&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --cream:#f5f0e8;--cream2:#ede7d9;--white:#fff;--ink:#1a1612;
+  --muted:#9a9186;--line:#ddd6c8;--green:#16a34a;--green-bg:#f0fdf4;
+  --orange:#d97706;--orange-bg:#fffbeb;--red:#dc2626;--red-bg:#fef2f2;
+  --blue:#2563eb;--blue-bg:#eff6ff;
+  --serif:'Instrument Serif',serif;--sans:'Geist',sans-serif;--mono:'Geist Mono',monospace;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--cream);color:var(--ink);font-family:var(--sans);min-height:100vh;display:flex;}
+
+/* SIDEBAR */
+.sidebar{width:240px;min-height:100vh;background:var(--ink);display:flex;flex-direction:column;position:fixed;left:0;top:0;z-index:100;}
+.sidebar-logo{padding:24px 20px;border-bottom:1px solid rgba(245,240,232,.08);display:flex;align-items:center;gap:10px;}
+.sidebar-logo-text{font-family:var(--serif);font-size:1.1rem;color:var(--cream);}
+.sidebar-rocket{animation:rocketBob 2.4s ease-in-out infinite;}
+@keyframes rocketBob{0%,100%{transform:translateY(0);}50%{transform:translateY(-4px);}}
+.sidebar-nav{flex:1;padding:16px 12px;}
+.nav-group-label{font-family:var(--mono);font-size:.58rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(245,240,232,.3);padding:12px 8px 6px;}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:10px;cursor:pointer;transition:background .2s;margin-bottom:2px;color:rgba(245,240,232,.6);font-size:.82rem;}
+.nav-item:hover{background:rgba(245,240,232,.08);color:var(--cream);}
+.nav-item.active{background:rgba(245,240,232,.12);color:var(--cream);}
+.nav-item .icon{font-size:1rem;width:20px;text-align:center;}
+.sidebar-footer{padding:16px 12px;border-top:1px solid rgba(245,240,232,.08);}
+.admin-badge{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;background:rgba(245,240,232,.06);}
+.admin-avatar{width:32px;height:32px;border-radius:50%;background:var(--cream);color:var(--ink);font-family:var(--mono);font-size:.65rem;display:flex;align-items:center;justify-content:center;font-weight:600;}
+.admin-name{font-size:.78rem;color:var(--cream);}
+.admin-role{font-family:var(--mono);font-size:.6rem;color:rgba(245,240,232,.4);}
+
+/* MAIN */
+.main{margin-left:240px;flex:1;min-height:100vh;}
+.topbar{background:var(--white);border-bottom:1px solid var(--line);padding:0 32px;height:60px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;}
+.topbar-title{font-family:var(--serif);font-size:1.2rem;font-weight:400;}
+.topbar-actions{display:flex;gap:12px;align-items:center;}
+.btn{font-size:.78rem;font-weight:500;padding:8px 18px;border-radius:999px;border:none;cursor:pointer;transition:.2s;display:inline-flex;align-items:center;gap:6px;}
+.btn-dark{background:var(--ink);color:var(--cream);}
+.btn-dark:hover{opacity:.8;}
+.btn-ghost{background:transparent;border:1px solid var(--line);color:var(--muted);}
+.btn-ghost:hover{border-color:var(--ink);color:var(--ink);}
+.content{padding:28px 32px;}
+
+/* SECTIONS */
+.section{display:none;}
+.section.active{display:block;}
+
+/* STATS GRID */
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px;}
+.stat-card{background:var(--white);border:1px solid var(--line);border-radius:16px;padding:20px 22px;}
+.stat-label{font-family:var(--mono);font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;}
+.stat-val{font-family:var(--serif);font-size:2.2rem;font-weight:400;letter-spacing:-.03em;line-height:1;}
+.stat-sub{font-size:.75rem;color:var(--muted);margin-top:4px;}
+.stat-green .stat-val{color:var(--green);}
+.stat-orange .stat-val{color:var(--orange);}
+
+/* GRID 2COL */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px;}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:24px;}
+
+/* CARD */
+.card{background:var(--white);border:1px solid var(--line);border-radius:16px;padding:22px;}
+.card-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;}
+.card-title{font-family:var(--serif);font-size:1.05rem;font-weight:400;}
+.card-badge{font-family:var(--mono);font-size:.6rem;letter-spacing:.1em;padding:4px 10px;border-radius:999px;background:var(--cream2);color:var(--muted);}
+
+/* TABLE */
+.table{width:100%;border-collapse:collapse;}
+.table th{font-family:var(--mono);font-size:.6rem;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);padding:0 12px 10px;text-align:left;border-bottom:1px solid var(--line);}
+.table td{padding:12px;font-size:.82rem;border-bottom:1px solid var(--line);}
+.table tr:last-child td{border-bottom:none;}
+.table tr:hover td{background:var(--cream);}
+
+/* BADGE STATUS */
+.badge{display:inline-flex;align-items:center;gap:5px;font-family:var(--mono);font-size:.6rem;letter-spacing:.08em;padding:4px 10px;border-radius:999px;}
+.badge-green{background:var(--green-bg);color:var(--green);}
+.badge-orange{background:var(--orange-bg);color:var(--orange);}
+.badge-red{background:var(--red-bg);color:var(--red);}
+.badge-blue{background:var(--blue-bg);color:var(--blue);}
+.badge-gray{background:var(--cream2);color:var(--muted);}
+
+/* PROGRESS BAR */
+.progress-wrap{background:var(--cream2);border-radius:999px;height:6px;overflow:hidden;}
+.progress-bar{height:100%;border-radius:999px;background:var(--ink);transition:width .3s;}
+
+/* CALENDAR */
+.calendar-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;}
+.cal-day-label{font-family:var(--mono);font-size:.6rem;color:var(--muted);text-align:center;padding:4px 0;letter-spacing:.08em;}
+.cal-day{aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;border-radius:8px;font-size:.78rem;cursor:pointer;transition:background .15s;position:relative;}
+.cal-day:hover{background:var(--cream2);}
+.cal-day.today{background:var(--ink);color:var(--cream);}
+.cal-day.has-event::after{content:'';width:4px;height:4px;border-radius:50%;background:var(--orange);position:absolute;bottom:3px;}
+.cal-day.today.has-event::after{background:var(--cream);}
+.cal-day.other-month{color:var(--line);}
+.cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+.cal-nav{background:none;border:1px solid var(--line);border-radius:8px;width:28px;height:28px;cursor:pointer;font-size:.8rem;display:flex;align-items:center;justify-content:center;}
+
+/* FORM */
+.form-group{display:flex;flex-direction:column;gap:5px;margin-bottom:12px;}
+.form-label{font-family:var(--mono);font-size:.6rem;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);}
+.form-input{font-family:var(--sans);font-size:.85rem;color:var(--ink);background:var(--cream);border:1px solid var(--line);border-radius:10px;padding:10px 14px;outline:none;width:100%;transition:border-color .2s;}
+.form-input:focus{border-color:var(--ink);}
+.form-select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24'%3E%3Cpath fill='%239a9186' d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.form-textarea{min-height:80px;resize:vertical;}
+
+/* UPLOAD AREA */
+.upload-area{border:2px dashed var(--line);border-radius:12px;padding:28px;text-align:center;cursor:pointer;transition:border-color .2s,background .2s;}
+.upload-area:hover{border-color:var(--ink);background:var(--cream);}
+.upload-icon{font-size:2rem;margin-bottom:8px;}
+.upload-text{font-size:.82rem;color:var(--muted);}
+.upload-text strong{color:var(--ink);}
+
+/* TRACKING */
+.tracking-steps{display:flex;flex-direction:column;gap:0;}
+.tracking-step{display:flex;gap:16px;align-items:flex-start;padding:12px 0;position:relative;}
+.tracking-step::before{content:'';position:absolute;left:16px;top:40px;width:1px;height:calc(100% - 16px);background:var(--line);}
+.tracking-step:last-child::before{display:none;}
+.step-dot{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.8rem;flex-shrink:0;border:2px solid var(--line);background:var(--white);}
+.step-dot.done{background:var(--ink);border-color:var(--ink);color:var(--cream);}
+.step-dot.current{background:var(--orange);border-color:var(--orange);color:var(--white);}
+.step-info{flex:1;padding-top:4px;}
+.step-title{font-size:.85rem;font-weight:500;}
+.step-date{font-family:var(--mono);font-size:.62rem;color:var(--muted);margin-top:2px;}
+
+/* MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(26,22,18,.4);z-index:200;align-items:center;justify-content:center;}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--white);border-radius:20px;padding:28px;width:100%;max-width:520px;max-height:85vh;overflow-y:auto;animation:modalIn .3s cubic-bezier(.16,1,.3,1);}
+@keyframes modalIn{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
+.modal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;}
+.modal-title{font-family:var(--serif);font-size:1.2rem;}
+.modal-close{background:none;border:1px solid var(--line);border-radius:8px;width:28px;height:28px;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;}
+
+/* CHART BAR */
+.chart-bars{display:flex;gap:8px;align-items:flex-end;height:120px;}
+.chart-bar-wrap{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;}
+.chart-bar{width:100%;border-radius:6px 6px 0 0;background:var(--ink);transition:height .4s;min-height:4px;}
+.chart-bar-label{font-family:var(--mono);font-size:.58rem;color:var(--muted);}
+
+/* NOTIFICATION DOT */
+.notif-dot{width:8px;height:8px;border-radius:50%;background:var(--red);display:inline-block;}
+
+/* AVATAR */
+.avatar{width:32px;height:32px;border-radius:50%;background:var(--ink);color:var(--cream);font-family:var(--mono);font-size:.6rem;display:inline-flex;align-items:center;justify-content:center;font-weight:600;flex-shrink:0;}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:4px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--line);border-radius:4px;}
+
+@media(max-width:900px){
+  .sidebar{width:200px;}
+  .main{margin-left:200px;}
+  .stats-grid{grid-template-columns:1fr 1fr;}
+  .grid-2{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <svg class="sidebar-rocket" width="22" height="28" viewBox="0 0 80 100" fill="none">
+      <path d="M40 5C40 5 58 22 58 52L40 65L22 52C22 22 40 5 40 5Z" fill="#f5f0e8"/>
+      <circle cx="40" cy="36" r="6" fill="#1a1612" opacity=".4"/>
+      <path d="M22 52L14 68L28 62Z" fill="#f5f0e8"/>
+      <path d="M58 52L66 68L52 62Z" fill="#f5f0e8"/>
+      <ellipse cx="40" cy="72" rx="6" ry="8" fill="#d97706" opacity=".9"/>
+      <ellipse cx="40" cy="74" rx="4" ry="6" fill="#fbbf24"/>
+    </svg>
+    <span class="sidebar-logo-text">Rocket X</span>
+  </div>
+
+  <nav class="sidebar-nav">
+    <div class="nav-group-label">Principal</div>
+    <div class="nav-item active" onclick="showSection('dashboard',this)"><span class="icon">📊</span> Dashboard</div>
+    <div class="nav-item" onclick="showSection('clientes',this)"><span class="icon">👥</span> Clientes</div>
+    <div class="nav-item" onclick="showSection('pedidos',this)"><span class="icon">📦</span> Pedidos</div>
+    <div class="nav-item" onclick="showSection('entregas',this)"><span class="icon">🚀</span> Entregas</div>
+
+    <div class="nav-group-label">Gestión</div>
+    <div class="nav-item" onclick="showSection('archivos',this)"><span class="icon">📁</span> Archivos</div>
+    <div class="nav-item" onclick="showSection('calendario',this)"><span class="icon">📅</span> Calendario</div>
+    <div class="nav-item" onclick="showSection('tracking',this)"><span class="icon">📍</span> Tracking</div>
+    <div class="nav-item" onclick="showSection('notas',this)"><span class="icon">📝</span> Notas</div>
+    <div class="nav-item" onclick="showSection('estadisticas',this)"><span class="icon">📈</span> Estadísticas</div>
+  </nav>
+
+  <div class="sidebar-footer">
+    <div class="admin-badge">
+      <div class="admin-avatar">AD</div>
+      <div>
+        <div class="admin-name">Admin</div>
+        <div class="admin-role">ADMINISTRADOR</div>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="topbar-title" id="page-title">Dashboard</div>
+    <div class="topbar-actions">
+      <button class="btn btn-ghost" onclick="openModal('modal-pedido')">+ Nuevo pedido</button>
+      <button class="btn btn-dark" onclick="openModal('modal-cliente')">+ Cliente</button>
+      <a href="client-dashboard.html" target="_blank" class="btn btn-ghost">👁 Vista cliente</a>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- ═══ DASHBOARD ═══ -->
+    <div class="section active" id="s-dashboard">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-label">Clientes activos</div>
+          <div class="stat-val">24</div>
+          <div class="stat-sub">+3 este mes</div>
+        </div>
+        <div class="stat-card stat-orange">
+          <div class="stat-label">Pedidos activos</div>
+          <div class="stat-val">12</div>
+          <div class="stat-sub">3 para hoy</div>
+        </div>
+        <div class="stat-card stat-green">
+          <div class="stat-label">Entregas este mes</div>
+          <div class="stat-val">18</div>
+          <div class="stat-sub">96% a tiempo</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Ingresos</div>
+          <div class="stat-val">$8.4k</div>
+          <div class="stat-sub">+22% vs mes anterior</div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <!-- PEDIDOS ACTIVOS -->
+        <div class="card">
+          <div class="card-head">
+            <span class="card-title">Pedidos activos</span>
+            <span class="card-badge">12 total</span>
+          </div>
+          <table class="table">
+            <thead><tr><th>Cliente</th><th>Tipo</th><th>Estado</th><th>Progreso</th></tr></thead>
+            <tbody>
+              <tr>
+                <td><div style="display:flex;align-items:center;gap:8px;"><div class="avatar">MR</div> María R.</div></td>
+                <td>💻 Web</td>
+                <td><span class="badge badge-orange">En proceso</span></td>
+                <td><div class="progress-wrap"><div class="progress-bar" style="width:65%"></div></div></td>
+              </tr>
+              <tr>
+                <td><div style="display:flex;align-items:center;gap:8px;"><div class="avatar">CL</div> Carlos L.</div></td>
+                <td>🎬 Video</td>
+                <td><span class="badge badge-blue">Revisión</span></td>
+                <td><div class="progress-wrap"><div class="progress-bar" style="width:85%"></div></div></td>
+              </tr>
+              <tr>
+                <td><div style="display:flex;align-items:center;gap:8px;"><div class="avatar">AG</div> Ana G.</div></td>
+                <td>📸 Fotos</td>
+                <td><span class="badge badge-green">Listo</span></td>
+                <td><div class="progress-wrap"><div class="progress-bar" style="width:100%"></div></div></td>
+              </tr>
+              <tr>
+                <td><div style="display:flex;align-items:center;gap:8px;"><div class="avatar">JP</div> Jorge P.</div></td>
+                <td>🎨 Diseño</td>
+                <td><span class="badge badge-gray">Pendiente</span></td>
+                <td><div class="progress-wrap"><div class="progress-bar" style="width:15%"></div></div></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- PRÓXIMAS ENTREGAS -->
+        <div class="card">
+          <div class="card-head">
+            <span class="card-title">Próximas entregas</span>
+            <span class="card-badge">Esta semana</span>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:10px;background:var(--orange-bg);border-radius:10px;">
+              <div style="display:flex;align-items:center;gap:10px;"><span style="font-size:1.2rem;">🎬</span><div><div style="font-size:.82rem;font-weight:500;">Video — Carlos L.</div><div style="font-family:var(--mono);font-size:.6rem;color:var(--muted);">Hoy 18:00</div></div></div>
+              <span class="badge badge-orange">Hoy</span>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:10px;background:var(--cream);border-radius:10px;">
+              <div style="display:flex;align-items:center;gap:10px;"><span style="font-size:1.2rem;">📸</span><div><div style="font-size:.82rem;font-weight:500;">Fotos — Ana G.</div><div style="font-family:var(--mono);font-size:.6rem;color:var(--muted);">Mañana 10:00</div></div></div>
+              <span class="badge badge-blue">Mañana</span>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:10px;background:var(--cream);border-radius:10px;">
+              <div style="display:flex;align-items:center;gap:10px;"><span style="font-size:1.2rem;">💻</span><div><div style="font-size:.82rem;font-weight:500;">Web — María R.</div><div style="font-family:var(--mono);font-size:.6rem;color:var(--muted);">Vie 20 Mar</div></div></div>
+              <span class="badge badge-gray">Vie</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MINI CALENDAR + NOTAS RÁPIDAS -->
+      <div class="grid-2">
+        <div class="card" id="mini-cal"></div>
+        <div class="card">
+          <div class="card-head"><span class="card-title">Notas rápidas</span><button class="btn btn-ghost" style="padding:4px 12px;font-size:.72rem;" onclick="addNota()">+ Añadir</button></div>
+          <div id="notas-list" style="display:flex;flex-direction:column;gap:8px;">
+            <div style="background:var(--cream);border-radius:10px;padding:12px;font-size:.82rem;">📌 Llamar a María para revisar mockups web</div>
+            <div style="background:var(--cream);border-radius:10px;padding:12px;font-size:.82rem;">⚡ Entregar video de Carlos antes de las 6pm</div>
+            <div style="background:var(--orange-bg);border-radius:10px;padding:12px;font-size:.82rem;">🔴 Factura pendiente — Jorge Pérez</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ CLIENTES ═══ -->
+    <div class="section" id="s-clientes">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+        <div style="font-family:var(--serif);font-size:1.4rem;">Clientes <span style="color:var(--muted);font-style:italic;">(24)</span></div>
+        <div style="display:flex;gap:8px;">
+          <input class="form-input" placeholder="🔍 Buscar cliente..." style="width:220px;padding:8px 14px;"/>
+          <button class="btn btn-dark" onclick="openModal('modal-cliente')">+ Nuevo cliente</button>
+        </div>
+      </div>
+      <div class="card">
+        <table class="table">
+          <thead><tr><th>Cliente</th><th>Email</th><th>Plan</th><th>Pedidos</th><th>Estado</th><th>Acciones</th></tr></thead>
+          <tbody>
+            <tr><td><div style="display:flex;align-items:center;gap:8px;"><div class="avatar">MR</div><div><div style="font-size:.82rem;font-weight:500;">María Rodríguez</div><div style="font-family:var(--mono);font-size:.6rem;color:var(--muted);">CEO · StyleCo</div></div></div></td><td style="font-size:.8rem;">maria@styleco.com</td><td><span class="badge badge-orange">Pro $300</span></td><td style="font-size:.82rem;">3 activos</td><td><span class="badge badge-green">Activo</span></td><td><button class="btn btn-ghost" style="padding:5px 12px;font-size:.72rem;" onclick="openModal('modal-cliente-detail')">Ver</button></td></tr>
+            <tr><td><div style="display:flex;align-items:center;gap:8px;"><div class="avatar">CL</div><div><div style="font-size:.82rem;font-weight:500;">Carlos López</div><div style="font-family:var(--mono);font-size:.6rem;color:var(--muted);">Fundador · NexGen</div></div></div></td><td style="font-size:.8rem;">carlos@nexgen.io</td><td><span class="badge badge-blue">Elite $799</span></td><td style="font-size:.82rem;">1 activo</td><td><span class="badge badge-green">Activo</span></td><td><button class="btn btn-ghost" style="padding:5px 12px;font-size:.72rem;" onclick="openModal('modal-cliente-detail')">Ver</button></td></tr>
+            <tr><td><div style="display:flex;align-items:center;gap:8px;"><div class="avatar">AG</div><div><div style="font-size:.82rem;font-weight:500;">Ana García</div><div style="font-family:var(--mono);font-size:.6rem;color:var(--muted);">Marketing · FitLife</div></div></div></td><td style="font-size:.8rem;">ana@fitlife.com</td><td><span class="badge badge-gray">Básico $99</span></td><td style="font-size:.82rem;">2 activos</td><td><span class="badge badge-green">Activo</span></td><td><button class="btn btn-ghost" style="padding:5px 12px;font-size:.72rem;" onclick="openModal('modal-cliente-detail')">Ver</button></td></tr>
+            <tr><td><div style="display:flex;align-items:center;gap:8px;"><div class="avatar">JP</div><div><div style="font-size:.82rem;font-weight:500;">Jorge Pérez</div><div style="font-family:var(--mono);font-size:.6rem;color:var(--muted);">Director · Aurum</div></div></div></td><td style="font-size:.8rem;">jorge@aurum.es</td><td><span class="badge badge-orange">Pro $300</span></td><td style="font-size:.82rem;">1 activo</td><td><span class="badge badge-red">Pago pendiente</span></td><td><button class="btn btn-ghost" style="padding:5px 12px;font-size:.72rem;" onclick="openModal('modal-cliente-detail')">Ver</button></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ═══ PEDIDOS ═══ -->
+    <div class="section" id="s-pedidos">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+        <div style="font-family:var(--serif);font-size:1.4rem;">Pedidos <span style="color:var(--muted);font-style:italic;">(12 activos)</span></div>
+        <button class="btn btn-dark" onclick="openModal('modal-pedido')">+ Nuevo pedido</button>
+      </div>
+      <div class="card">
+        <table class="table">
+          <thead><tr><th>#</th><th>Cliente</th><th>Tipo</th><th>Descripción</th><th>Estado</th><th>Entrega</th><th>Progreso</th><th></th></tr></thead>
+          <tbody>
+            <tr><td style="font-family:var(--mono);font-size:.7rem;color:var(--muted);">#001</td><td><div style="display:flex;align-items:center;gap:6px;"><div class="avatar">MR</div> María R.</div></td><td>💻 Web</td><td style="font-size:.8rem;max-width:140px;">Landing page ecommerce</td><td><span class="badge badge-orange">En proceso</span></td><td style="font-family:var(--mono);font-size:.7rem;">20 Mar</td><td style="min-width:80px;"><div class="progress-wrap"><div class="progress-bar" style="width:65%"></div></div><div style="font-family:var(--mono);font-size:.58rem;color:var(--muted);margin-top:2px;">65%</div></td><td><button class="btn btn-ghost" style="padding:5px 10px;font-size:.7rem;" onclick="openModal('modal-pedido-detail')">Gestionar</button></td></tr>
+            <tr><td style="font-family:var(--mono);font-size:.7rem;color:var(--muted);">#002</td><td><div style="display:flex;align-items:center;gap:6px;"><div class="avatar">CL</div> Carlos L.</div></td><td>🎬 Video</td><td style="font-size:.8rem;max-width:140px;">Reel producto 60s</td><td><span class="badge badge-blue">Revisión</span></td><td style="font-family:var(--mono);font-size:.7rem;">Hoy</td><td style="min-width:80px;"><div class="progress-wrap"><div class="progress-bar" style="width:85%"></div></div><div style="font-family:var(--mono);font-size:.58rem;color:var(--muted);margin-top:2px;">85%</div></td><td><button class="btn btn-ghost" style="padding:5px 10px;font-size:.7rem;" onclick="openModal('modal-pedido-detail')">Gestionar</button></td></tr>
+            <tr><td style="font-family:var(--mono);font-size:.7rem;color:var(--muted);">#003</td><td><div style="display:flex;align-items:center;gap:6px;"><div class="avatar">AG</div> Ana G.</div></td><td>📸 Fotos</td><td style="font-size:.8rem;max-width:140px;">Sesión producto x20</td><td><span class="badge badge-green">Listo</span></td><td style="font-family:var(--mono);font-size:.7rem;">Mañana</td><td style="min-width:80px;"><div class="progress-wrap"><div class="progress-bar" style="width:100%"></div></div><div style="font-family:var(--mono);font-size:.58rem;color:var(--muted);margin-top:2px;">100%</div></td><td><button class="btn btn-ghost" style="padding:5px 10px;font-size:.7rem;" onclick="openModal('modal-pedido-detail')">Gestionar</button></td></tr>
+            <tr><td style="font-family:var(--mono);font-size:.7rem;color:var(--muted);">#004</td><td><div style="display:flex;align-items:center;gap:6px;"><div class="avatar">JP</div> Jorge P.</div></td><td>🎨 Diseño</td><td style="font-size:.8rem;max-width:140px;">Branding completo</td><td><span class="badge badge-gray">Pendiente</span></td><td style="font-family:var(--mono);font-size:.7rem;">25 Mar</td><td style="min-width:80px;"><div class="progress-wrap"><div class="progress-bar" style="width:15%"></div></div><div style="font-family:var(--mono);font-size:.58rem;color:var(--muted);margin-top:2px;">15%</div></td><td><button class="btn btn-ghost" style="padding:5px 10px;font-size:.7rem;" onclick="openModal('modal-pedido-detail')">Gestionar</button></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ═══ ENTREGAS ═══ -->
+    <div class="section" id="s-entregas">
+      <div style="font-family:var(--serif);font-size:1.4rem;margin-bottom:20px;">Entregas <span style="color:var(--muted);font-style:italic;">para subir archivos</span></div>
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-head"><span class="card-title">Subir archivo a cliente</span></div>
+          <div class="form-group">
+            <div class="form-label">Cliente</div>
+            <select class="form-input form-select">
+              <option>María Rodríguez — #001 Web</option>
+              <option>Carlos López — #002 Video</option>
+              <option>Ana García — #003 Fotos</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <div class="form-label">Tipo de archivo</div>
+            <select class="form-input form-select">
+              <option>Entrega final</option>
+              <option>Avance / Preview</option>
+              <option>Referencia</option>
+              <option>Factura</option>
+            </select>
+          </div>
+          <div class="upload-area" onclick="document.getElementById('fileInput').click()">
+            <div class="upload-icon">📁</div>
+            <div class="upload-text"><strong>Clic para subir</strong> o arrastra aquí</div>
+            <div class="upload-text" style="margin-top:4px;font-size:.72rem;">PDF, ZIP, MP4, JPG, PNG — máx 500MB</div>
+          </div>
+          <input type="file" id="fileInput" style="display:none" multiple onchange="handleFileUpload(this)"/>
+          <div id="upload-preview" style="margin-top:12px;display:flex;flex-direction:column;gap:6px;"></div>
+          <div class="form-group" style="margin-top:12px;">
+            <div class="form-label">Nota para el cliente</div>
+            <textarea class="form-input form-textarea" placeholder="Ej: Aquí tienes la primera versión del video, revisar el audio al inicio..."></textarea>
+          </div>
+          <button class="btn btn-dark" style="width:100%;justify-content:center;margin-top:4px;">🚀 Enviar al cliente</button>
+        </div>
+        <div class="card">
+          <div class="card-head"><span class="card-title">Entregas recientes</span></div>
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <div style="border:1px solid var(--line);border-radius:10px;padding:12px;">
+              <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+                <div><div style="font-size:.82rem;font-weight:500;">🎬 reel_carlos_v2.mp4</div><div style="font-family:var(--mono);font-size:.6rem;color:var(--muted);">Carlos L. · Hace 2h · 180MB</div></div>
+                <span class="badge badge-blue">Entregado</span>
+              </div>
+            </div>
+            <div style="border:1px solid var(--line);border-radius:10px;padding:12px;">
+              <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+                <div><div style="font-size:.82rem;font-weight:500;">📸 fotos_producto_ana.zip</div><div style="font-family:var(--mono);font-size:.6rem;color:var(--muted);">Ana G. · Ayer · 240MB</div></div>
+                <span class="badge badge-green">Descargado</span>
+              </div>
+            </div>
+            <div style="border:1px solid var(--line);border-radius:10px;padding:12px;">
+              <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+                <div><div style="font-size:.82rem;font-weight:500;">💻 mockup_web_maria_v1.pdf</div><div style="font-family:var(--mono);font-size:.6rem;color:var(--muted);">María R. · 18 Mar · 12MB</div></div>
+                <span class="badge badge-orange">Sin leer</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ ARCHIVOS ═══ -->
+    <div class="section" id="s-archivos">
+      <div style="font-family:var(--serif);font-size:1.4rem;margin-bottom:20px;">Archivos <span style="color:var(--muted);font-style:italic;">por cliente</span></div>
+      <div class="card">
+        <div class="card-head">
+          <div style="display:flex;gap:8px;">
+            <button class="btn btn-dark" style="padding:6px 14px;font-size:.75rem;">Todos</button>
+            <button class="btn btn-ghost" style="padding:6px 14px;font-size:.75rem;">💻 Webs</button>
+            <button class="btn btn-ghost" style="padding:6px 14px;font-size:.75rem;">🎬 Videos</button>
+            <button class="btn btn-ghost" style="padding:6px 14px;font-size:.75rem;">📸 Fotos</button>
+            <button class="btn btn-ghost" style="padding:6px 14px;font-size:.75rem;">🎨 Diseño</button>
+          </div>
+          <button class="btn btn-ghost" style="padding:6px 14px;font-size:.75rem;">⬆ Subir</button>
+        </div>
+        <table class="table">
+          <thead><tr><th>Archivo</th><th>Cliente</th><th>Tipo</th><th>Tamaño</th><th>Fecha</th><th>Estado</th><th></th></tr></thead>
+          <tbody>
+            <tr><td><div style="display:flex;align-items:center;gap:8px;font-size:.82rem;">🎬 <span>reel_carlos_v2.mp4</span></div></td><td style="font-size:.8rem;">Carlos L.</td><td><span class="badge badge-blue">Entrega</span></td><td style="font-family:var(--mono);font-size:.7rem;">180MB</td><td style="font-family:var(--mono);font-size:.7rem;">Hoy</td><td><span class="badge badge-green">Descargado</span></td><td><button class="btn btn-ghost" style="padding:4px 10px;font-size:.7rem;">⬇</button></td></tr>
+            <tr><td><div style="display:flex;align-items:center;gap:8px;font-size:.82rem;">📸 <span>fotos_producto_ana.zip</span></div></td><td style="font-size:.8rem;">Ana G.</td><td><span class="badge badge-green">Entrega</span></td><td style="font-family:var(--mono);font-size:.7rem;">240MB</td><td style="font-family:var(--mono);font-size:.7rem;">Ayer</td><td><span class="badge badge-green">Descargado</span></td><td><button class="btn btn-ghost" style="padding:4px 10px;font-size:.7rem;">⬇</button></td></tr>
+            <tr><td><div style="display:flex;align-items:center;gap:8px;font-size:.82rem;">💻 <span>mockup_web_maria_v1.pdf</span></div></td><td style="font-size:.8rem;">María R.</td><td><span class="badge badge-orange">Preview</span></td><td style="font-family:var(--mono);font-size:.7rem;">12MB</td><td style="font-family:var(--mono);font-size:.7rem;">18 Mar</td><td><span class="badge badge-orange">Sin leer</span></td><td><button class="btn btn-ghost" style="padding:4px 10px;font-size:.7rem;">⬇</button></td></tr>
+            <tr><td><div style="display:flex;align-items:center;gap:8px;font-size:.82rem;">🎨 <span>brief_branding_jorge.pdf</span></div></td><td style="font-size:.8rem;">Jorge P.</td><td><span class="badge badge-gray">Referencia</span></td><td style="font-family:var(--mono);font-size:.7rem;">3MB</td><td style="font-family:var(--mono);font-size:.7rem;">17 Mar</td><td><span class="badge badge-green">Leído</span></td><td><button class="btn btn-ghost" style="padding:4px 10px;font-size:.7rem;">⬇</button></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ═══ CALENDARIO ═══ -->
+    <div class="section" id="s-calendario">
+      <div style="font-family:var(--serif);font-size:1.4rem;margin-bottom:20px;">Calendario de entregas</div>
+      <div class="grid-2">
+        <div class="card">
+          <div id="full-calendar"></div>
+        </div>
+        <div class="card">
+          <div class="card-head"><span class="card-title">Eventos del mes</span></div>
+          <div style="display:flex;flex-direction:column;gap:8px;" id="events-list">
+            <div style="display:flex;gap:12px;align-items:center;padding:10px;border-radius:10px;background:var(--orange-bg);">
+              <div style="font-family:var(--mono);font-size:.7rem;font-weight:600;color:var(--orange);width:32px;text-align:center;">20</div>
+              <div><div style="font-size:.82rem;font-weight:500;">Entrega web María R.</div><div style="font-family:var(--mono);font-size:.6rem;color:var(--muted);">💻 Landing page ecommerce</div></div>
+            </div>
+            <div style="display:flex;gap:12px;align-items:center;padding:10px;border-radius:10px;background:var(--blue-bg);">
+              <div style="font-family:var(--mono);font-size:.7rem;font-weight:600;color:var(--blue);width:32px;text-align:center;">21</div>
+              <div><div style="font-size:.82rem;font-weight:500;">Video Carlos L.</div><div style="font-family:var(--mono);font-size:.6rem;color:var(--muted);">🎬 Reel producto 60s</div></div>
+            </div>
+            <div style="display:flex;gap:12px;align-items:center;padding:10px;border-radius:10px;background:var(--green-bg);">
+              <div style="font-family:var(--mono);font-size:.7rem;font-weight:600;color:var(--green);width:32px;text-align:center;">22</div>
+              <div><div style="font-size:.82rem;font-weight:500;">Fotos Ana G.</div><div style="font-family:var(--mono);font-size:.6rem;color:var(--muted);">📸 Sesión producto x20</div></div>
+            </div>
+            <div style="display:flex;gap:12px;align-items:center;padding:10px;border-radius:10px;background:var(--cream);">
+              <div style="font-family:var(--mono);font-size:.7rem;font-weight:600;color:var(--muted);width:32px;text-align:center;">25</div>
+              <div><div style="font-size:.82rem;font-weight:500;">Branding Jorge P.</div><div style="font-family:var(--mono);font-size:.6rem;color:var(--muted);">🎨 Branding completo</div></div>
+            </div>
+          </div>
+          <div style="margin-top:16px;">
+            <div class="form-group">
+              <div class="form-label">Añadir evento</div>
+              <input class="form-input" placeholder="Nombre del evento..." style="margin-bottom:8px;"/>
+              <input class="form-input" type="date" style="margin-bottom:8px;"/>
+              <button class="btn btn-dark" style="width:100%;justify-content:center;">+ Añadir</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ TRACKING ═══ -->
+    <div class="section" id="s-tracking">
+      <div style="font-family:var(--serif);font-size:1.4rem;margin-bottom:20px;">Tracking de pedidos</div>
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-head">
+            <span class="card-title">Estado del pedido #002</span>
+            <span class="badge badge-blue">🎬 Video</span>
+          </div>
+          <div style="font-size:.82rem;color:var(--muted);margin-bottom:16px;">Carlos López — Reel producto 60s</div>
+          <div class="tracking-steps">
+            <div class="tracking-step">
+              <div class="step-dot done">✓</div>
+              <div class="step-info"><div class="step-title">Pedido recibido</div><div class="step-date">15 Mar · 10:30</div></div>
+            </div>
+            <div class="tracking-step">
+              <div class="step-dot done">✓</div>
+              <div class="step-info"><div class="step-title">Brief aprobado</div><div class="step-date">16 Mar · 14:00</div></div>
+            </div>
+            <div class="tracking-step">
+              <div class="step-dot done">✓</div>
+              <div class="step-info"><div class="step-title">En producción</div><div class="step-date">17 Mar · 09:00</div></div>
+            </div>
+            <div class="tracking-step">
+              <div class="step-dot current">→</div>
+              <div class="step-info"><div class="step-title">En revisión del cliente</div><div class="step-date">Hoy · En espera</div></div>
+            </div>
+            <div class="tracking-step">
+              <div class="step-dot">5</div>
+              <div class="step-info"><div class="step-title" style="color:var(--muted);">Aprobación final</div><div class="step-date">Pendiente</div></div>
+            </div>
+            <div class="tracking-step">
+              <div class="step-dot">6</div>
+              <div class="step-info"><div class="step-title" style="color:var(--muted);">Entrega completada</div><div class="step-date">Pendiente</div></div>
+            </div>
+          </div>
+          <div style="margin-top:16px;">
+            <div class="form-label" style="margin-bottom:8px;">Actualizar estado</div>
+            <div style="display:flex;gap:8px;">
+              <select class="form-input form-select" style="flex:1;">
+                <option>Aprobación final</option>
+                <option>Entrega completada</option>
+              </select>
+              <button class="btn btn-dark">Actualizar</button>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-head"><span class="card-title">Todos los pedidos</span></div>
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            <div style="border:1px solid var(--line);border-radius:10px;padding:12px;cursor:pointer;" onclick="">
+              <div style="display:flex;justify-content:space-between;"><div style="font-size:.82rem;font-weight:500;">#001 Web — María R.</div><span class="badge badge-orange">65%</span></div>
+              <div class="progress-wrap" style="margin-top:8px;"><div class="progress-bar" style="width:65%"></div></div>
+            </div>
+            <div style="border:2px solid var(--ink);border-radius:10px;padding:12px;cursor:pointer;">
+              <div style="display:flex;justify-content:space-between;"><div style="font-size:.82rem;font-weight:500;">#002 Video — Carlos L.</div><span class="badge badge-blue">85%</span></div>
+              <div class="progress-wrap" style="margin-top:8px;"><div class="progress-bar" style="width:85%"></div></div>
+            </div>
+            <div style="border:1px solid var(--line);border-radius:10px;padding:12px;cursor:pointer;">
+              <div style="display:flex;justify-content:space-between;"><div style="font-size:.82rem;font-weight:500;">#003 Fotos — Ana G.</div><span class="badge badge-green">100%</span></div>
+              <div class="progress-wrap" style="margin-top:8px;"><div class="progress-bar" style="width:100%"></div></div>
+            </div>
+            <div style="border:1px solid var(--line);border-radius:10px;padding:12px;cursor:pointer;">
+              <div style="display:flex;justify-content:space-between;"><div style="font-size:.82rem;font-weight:500;">#004 Diseño — Jorge P.</div><span class="badge badge-gray">15%</span></div>
+              <div class="progress-wrap" style="margin-top:8px;"><div class="progress-bar" style="width:15%"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ NOTAS ═══ -->
+    <div class="section" id="s-notas">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+        <div style="font-family:var(--serif);font-size:1.4rem;">Notas</div>
+        <button class="btn btn-dark" onclick="openModal('modal-nota')">+ Nueva nota</button>
+      </div>
+      <div class="grid-3" id="notas-board">
+        <div class="card" style="border-left:4px solid var(--orange);">
+          <div style="font-family:var(--mono);font-size:.6rem;color:var(--muted);margin-bottom:8px;">📌 URGENTE · Carlos L.</div>
+          <div style="font-size:.85rem;line-height:1.5;">Entregar el video antes de las 6pm. El cliente tiene una presentación mañana y necesita el material listo.</div>
+          <div style="font-family:var(--mono);font-size:.6rem;color:var(--muted);margin-top:12px;">Hoy 09:00</div>
+        </div>
+        <div class="card" style="border-left:4px solid var(--blue);">
+          <div style="font-family:var(--mono);font-size:.6rem;color:var(--muted);margin-bottom:8px;">📋 REVISIÓN · María R.</div>
+          <div style="font-size:.85rem;line-height:1.5;">Llamar para revisar los mockups del header. Le gusta la propuesta pero quiere cambiar el color del CTA a negro.</div>
+          <div style="font-family:var(--mono);font-size:.6rem;color:var(--muted);margin-top:12px;">18 Mar 15:30</div>
+        </div>
+        <div class="card" style="border-left:4px solid var(--green);">
+          <div style="font-family:var(--mono);font-size:.6rem;color:var(--muted);margin-bottom:8px;">✅ COMPLETADO · Ana G.</div>
+          <div style="font-size:.85rem;line-height:1.5;">Sesión de fotos completada. 24 fotos seleccionadas, editadas y listas para entregar en ZIP.</div>
+          <div style="font-family:var(--mono);font-size:.6rem;color:var(--muted);margin-top:12px;">17 Mar 11:00</div>
+        </div>
+        <div class="card" style="border-left:4px solid var(--red);">
+          <div style="font-family:var(--mono);font-size:.6rem;color:var(--muted);margin-bottom:8px;">💳 PAGO · Jorge P.</div>
+          <div style="font-size:.85rem;line-height:1.5;">Factura #004 pendiente de pago. Recordar al cliente antes de continuar con el branding.</div>
+          <div style="font-family:var(--mono);font-size:.6rem;color:var(--muted);margin-top:12px;">17 Mar 09:00</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ ESTADÍSTICAS ═══ -->
+    <div class="section" id="s-estadisticas">
+      <div style="font-family:var(--serif);font-size:1.4rem;margin-bottom:20px;">Estadísticas</div>
+      <div class="stats-grid">
+        <div class="stat-card"><div class="stat-label">Ingresos totales</div><div class="stat-val">$42.8k</div><div class="stat-sub">Desde enero 2024</div></div>
+        <div class="stat-card stat-green"><div class="stat-label">Proyectos completados</div><div class="stat-val">156</div><div class="stat-sub">96% satisfacción</div></div>
+        <div class="stat-card stat-orange"><div class="stat-label">Tiempo medio entrega</div><div class="stat-val">3.2d</div><div class="stat-sub">Objetivo: 3 días</div></div>
+        <div class="stat-card"><div class="stat-label">Clientes recurrentes</div><div class="stat-val">78%</div><div class="stat-sub">+5% vs año pasado</div></div>
+      </div>
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-head"><span class="card-title">Ingresos por mes</span></div>
+          <div class="chart-bars">
+            <div class="chart-bar-wrap"><div class="chart-bar" style="height:60px;"></div><div class="chart-bar-label">Oct</div></div>
+            <div class="chart-bar-wrap"><div class="chart-bar" style="height:75px;"></div><div class="chart-bar-label">Nov</div></div>
+            <div class="chart-bar-wrap"><div class="chart-bar" style="height:55px;"></div><div class="chart-bar-label">Dic</div></div>
+            <div class="chart-bar-wrap"><div class="chart-bar" style="height:80px;"></div><div class="chart-bar-label">Ene</div></div>
+            <div class="chart-bar-wrap"><div class="chart-bar" style="height:90px;"></div><div class="chart-bar-label">Feb</div></div>
+            <div class="chart-bar-wrap"><div class="chart-bar" style="height:110px;background:var(--orange);"></div><div class="chart-bar-label">Mar</div></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-head"><span class="card-title">Pedidos por tipo</span></div>
+          <div style="display:flex;flex-direction:column;gap:12px;">
+            <div><div style="display:flex;justify-content:space-between;font-size:.82rem;margin-bottom:4px;"><span>💻 Páginas Web</span><span style="font-family:var(--mono);">38%</span></div><div class="progress-wrap"><div class="progress-bar" style="width:38%"></div></div></div>
+            <div><div style="display:flex;justify-content:space-between;font-size:.82rem;margin-bottom:4px;"><span>🎬 Edición Video</span><span style="font-family:var(--mono);">28%</span></div><div class="progress-wrap"><div class="progress-bar" style="width:28%"></div></div></div>
+            <div><div style="display:flex;justify-content:space-between;font-size:.82rem;margin-bottom:4px;"><span>📸 Fotografía</span><span style="font-family:var(--mono);">20%</span></div><div class="progress-wrap"><div class="progress-bar" style="width:20%"></div></div></div>
+            <div><div style="display:flex;justify-content:space-between;font-size:.82rem;margin-bottom:4px;"><span>🎨 Diseño Gráfico</span><span style="font-family:var(--mono);">14%</span></div><div class="progress-wrap"><div class="progress-bar" style="width:14%"></div></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+</div><!-- /main -->
+
+<!-- MODALES -->
+<div class="modal-overlay" id="modal-cliente">
+  <div class="modal">
+    <div class="modal-head"><span class="modal-title">Nuevo cliente</span><button class="modal-close" onclick="closeModal('modal-cliente')">✕</button></div>
+    <div class="form-row"><div class="form-group"><div class="form-label">Nombre</div><input class="form-input" placeholder="Ana"/></div><div class="form-group"><div class="form-label">Apellido</div><input class="form-input" placeholder="García"/></div></div>
+    <div class="form-group"><div class="form-label">Email</div><input class="form-input" type="email" placeholder="ana@empresa.com"/></div>
+    <div class="form-group"><div class="form-label">Empresa</div><input class="form-input" placeholder="Mi empresa S.A."/></div>
+    <div class="form-group"><div class="form-label">Plan</div><select class="form-input form-select"><option>Básico — $99/mes</option><option>Pro — $300/mes</option><option>Elite — $799/mes</option></select></div>
+    <div class="form-group"><div class="form-label">Notas</div><textarea class="form-input form-textarea" placeholder="Notas internas..."></textarea></div>
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:8px;"><button class="btn btn-ghost" onclick="closeModal('modal-cliente')">Cancelar</button><button class="btn btn-dark">Crear cliente</button></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-pedido">
+  <div class="modal">
+    <div class="modal-head"><span class="modal-title">Nuevo pedido</span><button class="modal-close" onclick="closeModal('modal-pedido')">✕</button></div>
+    <div class="form-group"><div class="form-label">Cliente</div><select class="form-input form-select"><option>María Rodríguez</option><option>Carlos López</option><option>Ana García</option><option>Jorge Pérez</option></select></div>
+    <div class="form-group"><div class="form-label">Tipo de servicio</div><select class="form-input form-select"><option>💻 Página Web</option><option>🎬 Edición de Video</option><option>📸 Fotografía</option><option>🎨 Diseño Gráfico</option></select></div>
+    <div class="form-group"><div class="form-label">Descripción</div><textarea class="form-input form-textarea" placeholder="Detalla el pedido..."></textarea></div>
+    <div class="form-row"><div class="form-group"><div class="form-label">Fecha inicio</div><input class="form-input" type="date"/></div><div class="form-group"><div class="form-label">Fecha entrega</div><input class="form-input" type="date"/></div></div>
+    <div class="form-group"><div class="form-label">Precio ($)</div><input class="form-input" type="number" placeholder="300"/></div>
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:8px;"><button class="btn btn-ghost" onclick="closeModal('modal-pedido')">Cancelar</button><button class="btn btn-dark">Crear pedido</button></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-nota">
+  <div class="modal">
+    <div class="modal-head"><span class="modal-title">Nueva nota</span><button class="modal-close" onclick="closeModal('modal-nota')">✕</button></div>
+    <div class="form-group"><div class="form-label">Tipo</div><select class="form-input form-select"><option>📌 Urgente</option><option>📋 Revisión</option><option>✅ Completado</option><option>💳 Pago</option><option>💡 Idea</option></select></div>
+    <div class="form-group"><div class="form-label">Cliente (opcional)</div><select class="form-input form-select"><option>General</option><option>María R.</option><option>Carlos L.</option><option>Ana G.</option><option>Jorge P.</option></select></div>
+    <div class="form-group"><div class="form-label">Nota</div><textarea class="form-input form-textarea" placeholder="Escribe tu nota aquí..." style="min-height:100px;"></textarea></div>
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:8px;"><button class="btn btn-ghost" onclick="closeModal('modal-nota')">Cancelar</button><button class="btn btn-dark">Guardar nota</button></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-cliente-detail">
+  <div class="modal">
+    <div class="modal-head"><span class="modal-title">María Rodríguez</span><button class="modal-close" onclick="closeModal('modal-cliente-detail')">✕</button></div>
+    <div style="display:flex;align-items:center;gap:14px;margin-bottom:20px;padding:16px;background:var(--cream);border-radius:12px;">
+      <div class="avatar" style="width:48px;height:48px;font-size:.85rem;">MR</div>
+      <div><div style="font-size:.95rem;font-weight:500;">María Rodríguez</div><div style="font-family:var(--mono);font-size:.65rem;color:var(--muted);">CEO · StyleCo · maria@styleco.com</div><div style="margin-top:6px;"><span class="badge badge-orange">Pro $300/mes</span></div></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
+      <div style="background:var(--cream);border-radius:10px;padding:12px;"><div style="font-family:var(--mono);font-size:.6rem;color:var(--muted);">PEDIDOS ACTIVOS</div><div style="font-family:var(--serif);font-size:1.5rem;">3</div></div>
+      <div style="background:var(--cream);border-radius:10px;padding:12px;"><div style="font-family:var(--mono);font-size:.6rem;color:var(--muted);">TOTAL GASTADO</div><div style="font-family:var(--serif);font-size:1.5rem;">$1.2k</div></div>
+    </div>
+    <div style="font-family:var(--mono);font-size:.6rem;color:var(--muted);margin-bottom:8px;">PEDIDOS RECIENTES</div>
+    <div style="display:flex;flex-direction:column;gap:6px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:10px;border:1px solid var(--line);border-radius:8px;"><span style="font-size:.8rem;">#001 Landing page ecommerce</span><span class="badge badge-orange">En proceso</span></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:10px;border:1px solid var(--line);border-radius:8px;"><span style="font-size:.8rem;">#005 Fotos de producto</span><span class="badge badge-green">Entregado</span></div>
+    </div>
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:16px;"><button class="btn btn-ghost" onclick="closeModal('modal-cliente-detail')">Cerrar</button><button class="btn btn-dark">Editar cliente</button></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-pedido-detail">
+  <div class="modal">
+    <div class="modal-head"><span class="modal-title">Gestionar pedido #001</span><button class="modal-close" onclick="closeModal('modal-pedido-detail')">✕</button></div>
+    <div style="background:var(--cream);border-radius:12px;padding:14px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;">
+      <div><div style="font-size:.9rem;font-weight:500;">Landing page ecommerce</div><div style="font-family:var(--mono);font-size:.62rem;color:var(--muted);">María Rodríguez · 💻 Web</div></div>
+      <span class="badge badge-orange">En proceso</span>
+    </div>
+    <div class="form-group"><div class="form-label">Actualizar progreso (%)</div><input class="form-input" type="range" min="0" max="100" value="65" oninput="document.getElementById('prog-val').textContent=this.value+'%'"/><div style="font-family:var(--mono);font-size:.72rem;color:var(--muted);margin-top:4px;" id="prog-val">65%</div></div>
+    <div class="form-group"><div class="form-label">Nuevo estado</div><select class="form-input form-select"><option>Pendiente</option><option selected>En proceso</option><option>Revisión</option><option>Listo</option><option>Entregado</option></select></div>
+    <div class="form-group"><div class="form-label">Nota interna</div><textarea class="form-input form-textarea" placeholder="Avances, comentarios..."></textarea></div>
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:8px;"><button class="btn btn-ghost" onclick="closeModal('modal-pedido-detail')">Cancelar</button><button class="btn btn-dark">Guardar cambios</button></div>
+  </div>
+</div>
+
+<!-- SCRIPTS -->
+<script>
+// Navigation
+function showSection(id, el) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('s-'+id).classList.add('active');
+  el.classList.add('active');
+  const titles = {dashboard:'Dashboard',clientes:'Clientes',pedidos:'Pedidos',entregas:'Entregas',archivos:'Archivos',calendario:'Calendario',tracking:'Tracking',notas:'Notas',estadisticas:'Estadísticas'};
+  document.getElementById('page-title').textContent = titles[id] || id;
+  if(id==='calendario') renderCalendar('full-calendar');
+}
+
+// Modals
+function openModal(id){ document.getElementById(id).classList.add('open'); }
+function closeModal(id){ document.getElementById(id).classList.remove('open'); }
+document.querySelectorAll('.modal-overlay').forEach(o => o.addEventListener('click', e => { if(e.target===o) o.classList.remove('open'); }));
+
+// Calendar
+function renderCalendar(containerId) {
+  const container = document.getElementById(containerId);
+  if(!container) return;
+  const now = new Date();
+  const year = now.getFullYear(), month = now.getMonth();
+  const monthNames = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+  const firstDay = new Date(year, month, 1).getDay();
+  const daysInMonth = new Date(year, month+1, 0).getDate();
+  const events = [20, 21, 22, 25];
+  let html = `<div class="cal-header"><button class="cal-nav">◀</button><strong style="font-family:var(--serif);">${monthNames[month]} ${year}</strong><button class="cal-nav">▶</button></div>`;
+  html += '<div class="calendar-grid">';
+  ['D','L','M','X','J','V','S'].forEach(d => html += `<div class="cal-day-label">${d}</div>`);
+  for(let i=0;i<firstDay;i++) html += '<div class="cal-day other-month"></div>';
+  for(let d=1;d<=daysInMonth;d++){
+    const isToday = d===now.getDate();
+    const hasEvent = events.includes(d);
+    html += `<div class="cal-day${isToday?' today':''}${hasEvent?' has-event':''}">${d}</div>`;
+  }
+  html += '</div>';
+  container.innerHTML = html;
+}
+
+// Mini calendar on dashboard
+renderCalendar('mini-cal');
+// Add header to mini cal
+const miniCal = document.getElementById('mini-cal');
+if(miniCal) {
+  const head = document.createElement('div');
+  head.className = 'card-head';
+  head.innerHTML = '<span class="card-title">Calendario</span>';
+  miniCal.prepend(head);
+}
+
+// File upload
+function handleFileUpload(input) {
+  const preview = document.getElementById('upload-preview');
+  if(!preview) return;
+  preview.innerHTML = '';
+  Array.from(input.files).forEach(f => {
+    const div = document.createElement('div');
+    div.style.cssText = 'display:flex;align-items:center;justify-content:space-between;padding:8px 12px;background:var(--cream);border-radius:8px;font-size:.78rem;';
+    div.innerHTML = `<span>📄 ${f.name}</span><span style="font-family:var(--mono);font-size:.65rem;color:var(--muted);">${(f.size/1024/1024).toFixed(1)}MB</span>`;
+    preview.appendChild(div);
+  });
+}
+
+// Add nota
+function addNota() {
+  const text = prompt('Nueva nota:');
+  if(text) {
+    const list = document.getElementById('notas-list');
+    const div = document.createElement('div');
+    div.style.cssText = 'background:var(--cream);border-radius:10px;padding:12px;font-size:.82rem;';
+    div.textContent = '📌 ' + text;
+    list.appendChild(div);
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Rocket X — Mi Panel</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500;600&family=Geist+Mono:wght@400&display=swap" rel="stylesheet"/>
+<style>
+:root{--cream:#f5f0e8;--cream2:#ede7d9;--white:#fff;--ink:#1a1612;--muted:#9a9186;--line:#ddd6c8;--green:#16a34a;--green-bg:#f0fdf4;--orange:#d97706;--orange-bg:#fffbeb;--red:#dc2626;--red-bg:#fef2f2;--blue:#2563eb;--blue-bg:#eff6ff;--serif:'Instrument Serif',serif;--sans:'Geist',sans-serif;--mono:'Geist Mono',monospace;}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--cream);color:var(--ink);font-family:var(--sans);min-height:100vh;display:flex;}
+
+/* SIDEBAR */
+.sidebar{width:230px;min-height:100vh;background:var(--ink);display:flex;flex-direction:column;position:fixed;left:0;top:0;z-index:100;}
+.sidebar-logo{padding:22px 20px;border-bottom:1px solid rgba(245,240,232,.08);display:flex;align-items:center;gap:10px;}
+.sidebar-logo-text{font-family:var(--serif);font-size:1.05rem;color:var(--cream);}
+.sidebar-rocket{animation:rocketBob 2.4s ease-in-out infinite;}
+@keyframes rocketBob{0%,100%{transform:translateY(0);}50%{transform:translateY(-4px);}}
+.sidebar-nav{flex:1;padding:14px 12px;}
+.nav-group-label{font-family:var(--mono);font-size:.58rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(245,240,232,.3);padding:12px 8px 6px;}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:10px;cursor:pointer;transition:background .2s;margin-bottom:2px;color:rgba(245,240,232,.6);font-size:.82rem;}
+.nav-item:hover{background:rgba(245,240,232,.08);color:var(--cream);}
+.nav-item.active{background:rgba(245,240,232,.12);color:var(--cream);}
+.nav-item .icon{font-size:1rem;width:20px;text-align:center;}
+.sidebar-footer{padding:16px 12px;border-top:1px solid rgba(245,240,232,.08);}
+.client-badge{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;background:rgba(245,240,232,.06);}
+.client-avatar{width:32px;height:32px;border-radius:50%;background:var(--cream);color:var(--ink);font-family:var(--mono);font-size:.65rem;display:flex;align-items:center;justify-content:center;font-weight:600;}
+.client-name{font-size:.78rem;color:var(--cream);}
+.client-plan{font-family:var(--mono);font-size:.58rem;color:rgba(245,240,232,.4);}
+
+/* MAIN */
+.main{margin-left:230px;flex:1;min-height:100vh;}
+.topbar{background:var(--white);border-bottom:1px solid var(--line);padding:0 32px;height:58px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;}
+.topbar-title{font-family:var(--serif);font-size:1.15rem;font-weight:400;}
+.topbar-right{display:flex;align-items:center;gap:12px;}
+.notif-btn{width:36px;height:36px;border-radius:999px;border:1px solid var(--line);background:none;cursor:pointer;font-size:.9rem;position:relative;display:flex;align-items:center;justify-content:center;}
+.notif-dot{width:8px;height:8px;border-radius:50%;background:var(--red);position:absolute;top:4px;right:4px;border:2px solid var(--white);}
+.content{padding:26px 32px;}
+
+/* SECTIONS */
+.section{display:none;}
+.section.active{display:block;}
+
+/* CARDS */
+.card{background:var(--white);border:1px solid var(--line);border-radius:16px;padding:22px;}
+.card-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;}
+.card-title{font-family:var(--serif);font-size:1.05rem;font-weight:400;}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:20px;}
+
+/* BADGE */
+.badge{display:inline-flex;align-items:center;gap:5px;font-family:var(--mono);font-size:.6rem;letter-spacing:.08em;padding:4px 10px;border-radius:999px;}
+.badge-green{background:var(--green-bg);color:var(--green);}
+.badge-orange{background:var(--orange-bg);color:var(--orange);}
+.badge-red{background:var(--red-bg);color:var(--red);}
+.badge-blue{background:var(--blue-bg);color:var(--blue);}
+.badge-gray{background:var(--cream2);color:var(--muted);}
+
+/* PROGRESS */
+.progress-wrap{background:var(--cream2);border-radius:999px;height:8px;overflow:hidden;}
+.progress-bar{height:100%;border-radius:999px;background:var(--ink);transition:width .5s;}
+
+/* TRACKING */
+.tracking-steps{display:flex;flex-direction:column;gap:0;}
+.tracking-step{display:flex;gap:16px;align-items:flex-start;padding:12px 0;position:relative;}
+.tracking-step::before{content:'';position:absolute;left:15px;top:38px;width:2px;height:calc(100% - 14px);background:var(--line);}
+.tracking-step:last-child::before{display:none;}
+.step-dot{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.8rem;flex-shrink:0;border:2px solid var(--line);background:var(--white);}
+.step-dot.done{background:var(--ink);border-color:var(--ink);color:var(--cream);}
+.step-dot.current{background:var(--orange);border-color:var(--orange);color:var(--white);animation:pulse 2s ease-in-out infinite;}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(217,119,6,.3);}50%{box-shadow:0 0 0 8px rgba(217,119,6,0);}}
+.step-info{flex:1;padding-top:4px;}
+.step-title{font-size:.85rem;font-weight:500;}
+.step-date{font-family:var(--mono);font-size:.62rem;color:var(--muted);margin-top:2px;}
+
+/* CALENDAR */
+.calendar-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;}
+.cal-day-label{font-family:var(--mono);font-size:.6rem;color:var(--muted);text-align:center;padding:4px 0;}
+.cal-day{aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;border-radius:8px;font-size:.78rem;cursor:pointer;position:relative;}
+.cal-day.today{background:var(--ink);color:var(--cream);}
+.cal-day.delivery{background:var(--orange-bg);color:var(--orange);font-weight:600;}
+.cal-day.other-month{color:var(--line);}
+.cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+
+/* FILE ITEM */
+.file-item{display:flex;align-items:center;gap:12px;padding:14px;border:1px solid var(--line);border-radius:12px;transition:background .15s,border-color .15s;}
+.file-item:hover{background:var(--cream);border-color:var(--cream2);}
+.file-icon{font-size:1.6rem;flex-shrink:0;}
+.file-info{flex:1;}
+.file-name{font-size:.85rem;font-weight:500;}
+.file-meta{font-family:var(--mono);font-size:.6rem;color:var(--muted);margin-top:2px;}
+.btn{font-size:.78rem;font-weight:500;padding:8px 18px;border-radius:999px;border:none;cursor:pointer;transition:.2s;display:inline-flex;align-items:center;gap:6px;}
+.btn-dark{background:var(--ink);color:var(--cream);}
+.btn-dark:hover{opacity:.8;}
+.btn-ghost{background:transparent;border:1px solid var(--line);color:var(--muted);}
+.btn-ghost:hover{border-color:var(--ink);color:var(--ink);}
+.btn-green{background:var(--green);color:white;}
+.btn-green:hover{opacity:.85;}
+
+/* WELCOME CARD */
+.welcome-card{background:var(--ink);color:var(--cream);border-radius:20px;padding:28px 32px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;}
+.welcome-text h2{font-family:var(--serif);font-size:1.6rem;font-weight:400;margin-bottom:6px;}
+.welcome-text p{font-size:.85rem;color:rgba(245,240,232,.6);}
+.welcome-rocket{animation:rocketFly 3s ease-in-out infinite;}
+@keyframes rocketFly{0%,100%{transform:translateY(0) rotate(-6deg);}35%{transform:translateY(-12px) rotate(-8deg);}65%{transform:translateY(-5px) rotate(-4deg);}}
+
+/* ALERT */
+.alert{display:flex;align-items:flex-start;gap:12px;padding:14px 16px;border-radius:12px;margin-bottom:16px;}
+.alert-orange{background:var(--orange-bg);border:1px solid #fde68a;}
+.alert-blue{background:var(--blue-bg);border:1px solid #bfdbfe;}
+.alert-green{background:var(--green-bg);border:1px solid #bbf7d0;}
+.alert-icon{font-size:1.1rem;flex-shrink:0;margin-top:1px;}
+.alert-text{font-size:.82rem;line-height:1.5;}
+.alert-text strong{display:block;margin-bottom:2px;}
+
+::-webkit-scrollbar{width:4px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--line);border-radius:4px;}
+
+@media(max-width:900px){
+  .sidebar{width:190px;}
+  .main{margin-left:190px;}
+  .grid-2,.grid-3{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <svg class="sidebar-rocket" width="22" height="28" viewBox="0 0 80 100" fill="none">
+      <path d="M40 5C40 5 58 22 58 52L40 65L22 52C22 22 40 5 40 5Z" fill="#f5f0e8"/>
+      <circle cx="40" cy="36" r="6" fill="#1a1612" opacity=".4"/>
+      <path d="M22 52L14 68L28 62Z" fill="#f5f0e8"/>
+      <path d="M58 52L66 68L52 62Z" fill="#f5f0e8"/>
+      <ellipse cx="40" cy="72" rx="6" ry="8" fill="#d97706" opacity=".9"/>
+      <ellipse cx="40" cy="74" rx="4" ry="6" fill="#fbbf24"/>
+    </svg>
+    <span class="sidebar-logo-text">Rocket X</span>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-group-label">Mi panel</div>
+    <div class="nav-item active" onclick="showSection('inicio',this)"><span class="icon">🏠</span> Inicio</div>
+    <div class="nav-item" onclick="showSection('pedidos',this)"><span class="icon">📦</span> Mis pedidos</div>
+    <div class="nav-item" onclick="showSection('tracking',this)"><span class="icon">📍</span> Tracking</div>
+    <div class="nav-item" onclick="showSection('archivos',this)"><span class="icon">📁</span> Mis archivos</div>
+    <div class="nav-item" onclick="showSection('calendario',this)"><span class="icon">📅</span> Calendario</div>
+    <div class="nav-item" onclick="showSection('referencias',this)"><span class="icon">🖼</span> Referencias</div>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="client-badge">
+      <div class="client-avatar">MR</div>
+      <div>
+        <div class="client-name">María R.</div>
+        <div class="client-plan">PLAN PRO · $300/MES</div>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="topbar">
+    <div class="topbar-title" id="page-title">Mi panel</div>
+    <div class="topbar-right">
+      <button class="notif-btn">🔔<div class="notif-dot"></div></button>
+      <a href="index.html" class="btn btn-ghost" style="font-size:.75rem;">← Volver al sitio</a>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- ═══ INICIO ═══ -->
+    <div class="section active" id="s-inicio">
+      <div class="welcome-card">
+        <div class="welcome-text">
+          <h2>¡Hola, María! 👋</h2>
+          <p>Tienes 3 pedidos activos y 1 archivo listo para descargar.</p>
+          <div style="display:flex;gap:10px;margin-top:16px;">
+            <button class="btn" style="background:var(--cream);color:var(--ink);font-size:.78rem;" onclick="showSection('archivos',document.querySelectorAll('.nav-item')[3])">📁 Ver archivos</button>
+            <button class="btn" style="background:rgba(245,240,232,.15);color:var(--cream);border:1px solid rgba(245,240,232,.2);font-size:.78rem;" onclick="showSection('tracking',document.querySelectorAll('.nav-item')[2])">📍 Ver tracking</button>
+          </div>
+        </div>
+        <svg class="welcome-rocket" width="70" height="88" viewBox="0 0 80 100" fill="none">
+          <path d="M40 5C40 5 58 22 58 52L40 65L22 52C22 22 40 5 40 5Z" fill="#f5f0e8"/>
+          <path d="M40 5C40 5 50 18 52 38C48 32 42 26 40 5Z" fill="white" opacity=".12"/>
+          <circle cx="40" cy="36" r="7" fill="#1a1612" opacity=".4"/>
+          <path d="M22 52L14 68L28 62Z" fill="#f5f0e8"/>
+          <path d="M58 52L66 68L52 62Z" fill="#f5f0e8"/>
+          <ellipse cx="40" cy="72" rx="7" ry="10" fill="#d97706" opacity=".9"/>
+          <ellipse cx="40" cy="74" rx="4.5" ry="7" fill="#fbbf24"/>
+          <ellipse cx="40" cy="76" rx="2.5" ry="4.5" fill="#fef3c7"/>
+        </svg>
+      </div>
+
+      <div class="alert alert-orange">
+        <div class="alert-icon">⚡</div>
+        <div class="alert-text"><strong>Archivo listo para descargar</strong>Video — Reel producto 60s · Subido hace 2 horas. <a href="#" style="color:var(--orange);font-weight:500;">Ir a Mis archivos →</a></div>
+      </div>
+
+      <div class="alert alert-blue">
+        <div class="alert-icon">📅</div>
+        <div class="alert-text"><strong>Entrega programada</strong>Tu web (Landing page ecommerce) se entrega el 20 de marzo. Quedan 2 días.</div>
+      </div>
+
+      <div class="grid-3">
+        <div class="card" style="text-align:center;">
+          <div style="font-size:1.8rem;margin-bottom:6px;">📦</div>
+          <div style="font-family:var(--serif);font-size:2rem;">3</div>
+          <div style="font-family:var(--mono);font-size:.62rem;color:var(--muted);margin-top:2px;">PEDIDOS ACTIVOS</div>
+        </div>
+        <div class="card" style="text-align:center;">
+          <div style="font-size:1.8rem;margin-bottom:6px;">📁</div>
+          <div style="font-family:var(--serif);font-size:2rem;">5</div>
+          <div style="font-family:var(--mono);font-size:.62rem;color:var(--muted);margin-top:2px;">ARCHIVOS DISPONIBLES</div>
+        </div>
+        <div class="card" style="text-align:center;">
+          <div style="font-size:1.8rem;margin-bottom:6px;">✅</div>
+          <div style="font-family:var(--serif);font-size:2rem;">8</div>
+          <div style="font-family:var(--mono);font-size:.62rem;color:var(--muted);margin-top:2px;">PROYECTOS COMPLETADOS</div>
+        </div>
+      </div>
+
+      <!-- PEDIDOS RESUMEN -->
+      <div class="card">
+        <div class="card-head"><span class="card-title">Pedidos activos</span><button class="btn btn-ghost" style="padding:5px 12px;font-size:.72rem;" onclick="showSection('pedidos',document.querySelectorAll('.nav-item')[1])">Ver todos</button></div>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <div style="padding:14px;border:1px solid var(--line);border-radius:12px;">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;">
+              <div><div style="font-size:.85rem;font-weight:500;">💻 Landing page ecommerce</div><div style="font-family:var(--mono);font-size:.62rem;color:var(--muted);">#001 · Entrega: 20 Mar</div></div>
+              <span class="badge badge-orange">En proceso</span>
+            </div>
+            <div class="progress-wrap"><div class="progress-bar" style="width:65%"></div></div>
+            <div style="font-family:var(--mono);font-size:.6rem;color:var(--muted);margin-top:4px;">65% completado</div>
+          </div>
+          <div style="padding:14px;border:1px solid var(--line);border-radius:12px;">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;">
+              <div><div style="font-size:.85rem;font-weight:500;">🎨 Branding identidad</div><div style="font-family:var(--mono);font-size:.62rem;color:var(--muted);">#006 · Entrega: 28 Mar</div></div>
+              <span class="badge badge-gray">Pendiente inicio</span>
+            </div>
+            <div class="progress-wrap"><div class="progress-bar" style="width:5%"></div></div>
+            <div style="font-family:var(--mono);font-size:.6rem;color:var(--muted);margin-top:4px;">5% — Brief en revisión</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ PEDIDOS ═══ -->
+    <div class="section" id="s-pedidos">
+      <div style="font-family:var(--serif);font-size:1.4rem;margin-bottom:20px;">Mis pedidos</div>
+      <div style="display:flex;flex-direction:column;gap:14px;">
+
+        <div class="card">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;">
+            <div><div style="font-size:.95rem;font-weight:500;">💻 Landing page ecommerce</div><div style="font-family:var(--mono);font-size:.65rem;color:var(--muted);margin-top:3px;">Pedido #001 · Plan Pro · Iniciado 15 Mar</div></div>
+            <span class="badge badge-orange">En proceso</span>
+          </div>
+          <div class="progress-wrap" style="margin-bottom:6px;"><div class="progress-bar" style="width:65%"></div></div>
+          <div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:.62rem;color:var(--muted);margin-bottom:14px;"><span>65% completado</span><span>Entrega: 20 Mar 2026</span></div>
+          <div style="background:var(--cream);border-radius:10px;padding:12px;font-size:.8rem;color:var(--muted);">💬 <em>"Estamos trabajando en el diseño del header y el sistema de carrito. En 2 días tendrás una preview para revisar."</em></div>
+          <div style="margin-top:12px;display:flex;gap:8px;">
+            <button class="btn btn-ghost" style="font-size:.75rem;" onclick="showSection('tracking',document.querySelectorAll('.nav-item')[2])">📍 Ver tracking</button>
+            <button class="btn btn-ghost" style="font-size:.75rem;">💬 Enviar mensaje</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;">
+            <div><div style="font-size:.95rem;font-weight:500;">🎬 Reel producto 60s</div><div style="font-family:var(--mono);font-size:.65rem;color:var(--muted);margin-top:3px;">Pedido #002 · Plan Pro · Iniciado 15 Mar</div></div>
+            <span class="badge badge-green">¡Listo para descargar!</span>
+          </div>
+          <div class="progress-wrap" style="margin-bottom:6px;"><div class="progress-bar" style="width:100%"></div></div>
+          <div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:.62rem;color:var(--muted);margin-bottom:14px;"><span>100% completado ✅</span><span>Entregado hoy</span></div>
+          <div class="alert alert-green" style="margin-bottom:12px;border-radius:10px;">
+            <div class="alert-icon">📥</div>
+            <div class="alert-text"><strong>Archivo listo</strong>reel_producto_v2.mp4 · 180MB · Subido hace 2h</div>
+          </div>
+          <button class="btn btn-green" style="font-size:.8rem;" onclick="showSection('archivos',document.querySelectorAll('.nav-item')[3])">⬇ Descargar ahora</button>
+        </div>
+
+        <div class="card">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;">
+            <div><div style="font-size:.95rem;font-weight:500;">🎨 Branding identidad</div><div style="font-family:var(--mono);font-size:.65rem;color:var(--muted);margin-top:3px;">Pedido #006 · Plan Pro · Iniciado hoy</div></div>
+            <span class="badge badge-gray">Pendiente</span>
+          </div>
+          <div class="progress-wrap" style="margin-bottom:6px;"><div class="progress-bar" style="width:5%"></div></div>
+          <div style="font-family:var(--mono);font-size:.62rem;color:var(--muted);">5% — Brief en revisión · Entrega estimada: 28 Mar</div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ═══ TRACKING ═══ -->
+    <div class="section" id="s-tracking">
+      <div style="font-family:var(--serif);font-size:1.4rem;margin-bottom:20px;">Tracking de pedidos</div>
+
+      <!-- Selector pedido -->
+      <div style="display:flex;gap:8px;margin-bottom:20px;">
+        <button class="btn btn-dark" style="font-size:.75rem;">💻 Web #001</button>
+        <button class="btn btn-ghost" style="font-size:.75rem;">🎬 Video #002</button>
+        <button class="btn btn-ghost" style="font-size:.75rem;">🎨 Branding #006</button>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-head">
+            <div><div class="card-title">💻 Landing page ecommerce</div><div style="font-family:var(--mono);font-size:.62rem;color:var(--muted);margin-top:3px;">#001 · Entrega: 20 Mar 2026</div></div>
+            <span class="badge badge-orange">65%</span>
+          </div>
+          <div class="progress-wrap" style="margin-bottom:20px;"><div class="progress-bar" style="width:65%"></div></div>
+          <div class="tracking-steps">
+            <div class="tracking-step">
+              <div class="step-dot done">✓</div>
+              <div class="step-info"><div class="step-title">Pedido recibido ✅</div><div class="step-date">15 Mar · 10:30 — Tu pedido fue confirmado</div></div>
+            </div>
+            <div class="tracking-step">
+              <div class="step-dot done">✓</div>
+              <div class="step-info"><div class="step-title">Brief aprobado ✅</div><div class="step-date">16 Mar · 14:00 — Hemos revisado tus requisitos</div></div>
+            </div>
+            <div class="tracking-step">
+              <div class="step-dot done">✓</div>
+              <div class="step-info"><div class="step-title">Diseño en desarrollo ✅</div><div class="step-date">17 Mar · 09:00 — Iniciamos la maquetación</div></div>
+            </div>
+            <div class="tracking-step">
+              <div class="step-dot current">→</div>
+              <div class="step-info"><div class="step-title">Preview para revisión 🔄</div><div class="step-date">Hoy — Pronto recibirás una vista previa</div></div>
+            </div>
+            <div class="tracking-step">
+              <div class="step-dot">5</div>
+              <div class="step-info"><div class="step-title" style="color:var(--muted);">Ajustes finales</div><div class="step-date" style="color:var(--line);">Pendiente</div></div>
+            </div>
+            <div class="tracking-step">
+              <div class="step-dot">6</div>
+              <div class="step-info"><div class="step-title" style="color:var(--muted);">🚀 Entrega completada</div><div class="step-date" style="color:var(--line);">20 Mar · Fecha estimada</div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><span class="card-title">Últimas actualizaciones</span></div>
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <div style="padding:12px;background:var(--orange-bg);border-radius:10px;">
+              <div style="font-family:var(--mono);font-size:.6rem;color:var(--orange);margin-bottom:4px;">HOY · 09:30</div>
+              <div style="font-size:.82rem;">El equipo ha iniciado el diseño del sistema de checkout y carrito de compras.</div>
+            </div>
+            <div style="padding:12px;background:var(--cream);border-radius:10px;">
+              <div style="font-family:var(--mono);font-size:.6rem;color:var(--muted);margin-bottom:4px;">18 MAR · 15:00</div>
+              <div style="font-size:.82rem;">Header y hero section completados al 100%. Comenzamos con el catálogo de productos.</div>
+            </div>
+            <div style="padding:12px;background:var(--cream);border-radius:10px;">
+              <div style="font-family:var(--mono);font-size:.6rem;color:var(--muted);margin-bottom:4px;">17 MAR · 09:00</div>
+              <div style="font-size:.82rem;">Brief revisado y aprobado. Empezamos la maquetación del diseño en Figma.</div>
+            </div>
+          </div>
+          <div style="margin-top:16px;padding:14px;background:var(--green-bg);border-radius:12px;">
+            <div style="font-family:var(--mono);font-size:.62rem;color:var(--green);margin-bottom:4px;">🗓 FECHA DE ENTREGA</div>
+            <div style="font-family:var(--serif);font-size:1.4rem;color:var(--green);">20 de Marzo</div>
+            <div style="font-size:.78rem;color:var(--green);opacity:.7;margin-top:2px;">2 días restantes</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ ARCHIVOS ═══ -->
+    <div class="section" id="s-archivos">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+        <div style="font-family:var(--serif);font-size:1.4rem;">Mis archivos</div>
+        <div style="display:flex;gap:8px;">
+          <button class="btn btn-dark" style="font-size:.75rem;">Todos</button>
+          <button class="btn btn-ghost" style="font-size:.75rem;">Por descargar</button>
+          <button class="btn btn-ghost" style="font-size:.75rem;">Descargados</button>
+        </div>
+      </div>
+
+      <!-- Archivo nuevo resaltado -->
+      <div style="border:2px solid var(--green);border-radius:16px;padding:18px;margin-bottom:16px;background:var(--green-bg);display:flex;align-items:center;gap:16px;">
+        <div style="font-size:2.5rem;">🎬</div>
+        <div style="flex:1;">
+          <div style="font-size:.9rem;font-weight:600;color:var(--green);">¡Archivo nuevo! reel_producto_v2.mp4</div>
+          <div style="font-family:var(--mono);font-size:.62rem;color:var(--green);opacity:.7;margin-top:3px;">Pedido #002 · Video · 180MB · Subido hace 2h · Entrega final</div>
+          <div style="font-size:.78rem;margin-top:6px;color:var(--ink);">💬 <em>"Aquí tienes la versión final del reel. Hemos mejorado el audio y añadido las transiciones que pediste."</em></div>
+        </div>
+        <button class="btn btn-green" style="white-space:nowrap;">⬇ Descargar</button>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div class="file-item">
+          <div class="file-icon">💻</div>
+          <div class="file-info">
+            <div class="file-name">mockup_web_v1.pdf</div>
+            <div class="file-meta">Pedido #001 · Preview · 12MB · 18 Mar · Sin leer</div>
+          </div>
+          <span class="badge badge-orange">Sin leer</span>
+          <button class="btn btn-dark" style="font-size:.72rem;padding:7px 14px;">⬇ Descargar</button>
+        </div>
+        <div class="file-item">
+          <div class="file-icon">📸</div>
+          <div class="file-info">
+            <div class="file-name">fotos_producto_batch1.zip</div>
+            <div class="file-meta">Pedido #005 · Entrega final · 240MB · 14 Mar · Descargado</div>
+          </div>
+          <span class="badge badge-green">Descargado</span>
+          <button class="btn btn-ghost" style="font-size:.72rem;padding:7px 14px;">⬇ Volver a descargar</button>
+        </div>
+        <div class="file-item">
+          <div class="file-icon">🎨</div>
+          <div class="file-info">
+            <div class="file-name">logo_variantes.zip</div>
+            <div class="file-meta">Pedido #003 · Entrega final · 8MB · 10 Mar · Descargado</div>
+          </div>
+          <span class="badge badge-green">Descargado</span>
+          <button class="btn btn-ghost" style="font-size:.72rem;padding:7px 14px;">⬇ Volver a descargar</button>
+        </div>
+        <div class="file-item">
+          <div class="file-icon">📄</div>
+          <div class="file-info">
+            <div class="file-name">brief_web_aprobado.pdf</div>
+            <div class="file-meta">Pedido #001 · Referencia · 3MB · 16 Mar · Leído</div>
+          </div>
+          <span class="badge badge-gray">Referencia</span>
+          <button class="btn btn-ghost" style="font-size:.72rem;padding:7px 14px;">⬇ Descargar</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ CALENDARIO ═══ -->
+    <div class="section" id="s-calendario">
+      <div style="font-family:var(--serif);font-size:1.4rem;margin-bottom:20px;">Mi calendario de entregas</div>
+      <div class="grid-2">
+        <div class="card" id="client-cal-wrap"></div>
+        <div class="card">
+          <div class="card-head"><span class="card-title">Mis entregas programadas</span></div>
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <div style="padding:14px;background:var(--orange-bg);border-radius:12px;border-left:4px solid var(--orange);">
+              <div style="font-family:var(--mono);font-size:.62rem;color:var(--orange);margin-bottom:4px;">20 MARZO · 2 DÍAS</div>
+              <div style="font-size:.85rem;font-weight:500;">💻 Landing page ecommerce</div>
+              <div style="font-size:.78rem;color:var(--muted);margin-top:3px;">Pedido #001 · Entrega completa del sitio web</div>
+            </div>
+            <div style="padding:14px;background:var(--cream);border-radius:12px;border-left:4px solid var(--line);">
+              <div style="font-family:var(--mono);font-size:.62rem;color:var(--muted);margin-bottom:4px;">28 MARZO · 10 DÍAS</div>
+              <div style="font-size:.85rem;font-weight:500;">🎨 Branding identidad</div>
+              <div style="font-size:.78rem;color:var(--muted);margin-top:3px;">Pedido #006 · Logo, colores y guía de marca</div>
+            </div>
+          </div>
+
+          <!-- Solicitar entrega -->
+          <div style="margin-top:20px;padding:16px;border:1px solid var(--line);border-radius:12px;">
+            <div style="font-family:var(--mono);font-size:.62rem;color:var(--muted);margin-bottom:10px;">📅 SOLICITAR FECHA DE ENTREGA</div>
+            <div style="font-size:.82rem;color:var(--muted);margin-bottom:12px;">¿Necesitas tu pedido antes? Solicita una fecha personalizada y te confirmamos disponibilidad.</div>
+            <select style="width:100%;font-family:var(--sans);font-size:.85rem;background:var(--cream);border:1px solid var(--line);border-radius:10px;padding:10px 14px;outline:none;margin-bottom:8px;">
+              <option>💻 Landing page #001</option>
+              <option>🎨 Branding #006</option>
+            </select>
+            <input type="date" style="width:100%;font-family:var(--sans);font-size:.85rem;background:var(--cream);border:1px solid var(--line);border-radius:10px;padding:10px 14px;outline:none;margin-bottom:8px;"/>
+            <button class="btn btn-dark" style="width:100%;justify-content:center;">Solicitar esta fecha →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ REFERENCIAS ═══ -->
+    <div class="section" id="s-referencias">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+        <div style="font-family:var(--serif);font-size:1.4rem;">Referencias enviadas</div>
+        <button class="btn btn-dark" style="font-size:.75rem;" onclick="document.getElementById('ref-input').click()">+ Subir referencia</button>
+      </div>
+      <input type="file" id="ref-input" style="display:none" multiple accept="image/*,.pdf" onchange="handleRefUpload(this)"/>
+
+      <div class="card" style="margin-bottom:16px;">
+        <div class="card-head"><span class="card-title">Subir referencias para tus pedidos</span></div>
+        <div style="border:2px dashed var(--line);border-radius:12px;padding:28px;text-align:center;cursor:pointer;" onclick="document.getElementById('ref-input').click()">
+          <div style="font-size:2rem;margin-bottom:8px;">🖼</div>
+          <div style="font-size:.85rem;color:var(--muted);"><strong style="color:var(--ink);">Clic para subir</strong> o arrastra imágenes, PDFs, links de inspiración</div>
+        </div>
+        <div id="ref-preview" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;"></div>
+      </div>
+
+      <div class="grid-3">
+        <div style="border:1px solid var(--line);border-radius:14px;overflow:hidden;">
+          <div style="height:120px;background:linear-gradient(135deg,var(--cream2),var(--cream));display:flex;align-items:center;justify-content:center;font-size:2.5rem;">🎨</div>
+          <div style="padding:12px;"><div style="font-size:.82rem;font-weight:500;">ref_colores_marca.jpg</div><div style="font-family:var(--mono);font-size:.6rem;color:var(--muted);margin-top:2px;">Pedido #006 · 15 Mar</div></div>
+        </div>
+        <div style="border:1px solid var(--line);border-radius:14px;overflow:hidden;">
+          <div style="height:120px;background:linear-gradient(135deg,#e0e7ff,#c7d2fe);display:flex;align-items:center;justify-content:center;font-size:2.5rem;">💻</div>
+          <div style="padding:12px;"><div style="font-size:.82rem;font-weight:500;">inspiracion_web.pdf</div><div style="font-family:var(--mono);font-size:.6rem;color:var(--muted);margin-top:2px;">Pedido #001 · 14 Mar</div></div>
+        </div>
+        <div style="border:1px solid var(--line);border-radius:14px;overflow:hidden;">
+          <div style="height:120px;background:linear-gradient(135deg,#fef3c7,#fde68a);display:flex;align-items:center;justify-content:center;font-size:2.5rem;">📸</div>
+          <div style="padding:12px;"><div style="font-size:.82rem;font-weight:500;">fotos_ref_estilo.zip</div><div style="font-family:var(--mono);font-size:.6rem;color:var(--muted);margin-top:2px;">Pedido #005 · 10 Mar</div></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+function showSection(id,el){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('s-'+id).classList.add('active');
+  if(el)el.classList.add('active');
+  const titles={inicio:'Mi panel',pedidos:'Mis pedidos',tracking:'Tracking',archivos:'Mis archivos',calendario:'Calendario',referencias:'Referencias'};
+  document.getElementById('page-title').textContent=titles[id]||id;
+  if(id==='calendario')renderClientCal();
+}
+
+function renderClientCal(){
+  const wrap=document.getElementById('client-cal-wrap');
+  if(!wrap||wrap.dataset.rendered)return;
+  wrap.dataset.rendered='1';
+  const now=new Date();
+  const year=now.getFullYear(),month=now.getMonth();
+  const monthNames=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+  const firstDay=new Date(year,month,1).getDay();
+  const daysInMonth=new Date(year,month+1,0).getDate();
+  const deliveries=[20,28];
+  let html=`<div style="font-family:var(--serif);font-size:1.05rem;margin-bottom:14px;">${monthNames[month]} ${year}</div>`;
+  html+='<div class="calendar-grid">';
+  ['D','L','M','X','J','V','S'].forEach(d=>html+=`<div class="cal-day-label">${d}</div>`);
+  for(let i=0;i<firstDay;i++)html+='<div class="cal-day other-month"></div>';
+  for(let d=1;d<=daysInMonth;d++){
+    const isToday=d===now.getDate();
+    const isDelivery=deliveries.includes(d);
+    html+=`<div class="cal-day${isToday?' today':isDelivery?' delivery':''}" title="${isDelivery?'Entrega programada':''}">${d}${isDelivery?'<span style="font-size:.5rem;display:block;">🚀</span>':''}</div>`;
+  }
+  html+='</div>';
+  wrap.innerHTML=html;
+}
+
+function handleRefUpload(input){
+  const preview=document.getElementById('ref-preview');
+  if(!preview)return;
+  Array.from(input.files).forEach(f=>{
+    const div=document.createElement('div');
+    div.style.cssText='display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--cream);border-radius:8px;font-size:.78rem;';
+    div.innerHTML=`🖼 ${f.name} <span style="font-family:var(--mono);font-size:.62rem;color:var(--muted);">${(f.size/1024/1024).toFixed(1)}MB</span>`;
+    preview.appendChild(div);
+  });
+}
+</script>
+</body>
+</html>

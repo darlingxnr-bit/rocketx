@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Rocket X — Agencia de Marketing</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500&family=Geist+Mono:wght@400&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="styles.css"/>
+</head>
+<body>
+<div class="cur" id="cur"></div>
+<div class="cur-ring" id="ring"></div>
+
+<div class="mob" id="mob">
+  <a href="#servicios" onclick="closeMob()">Servicios</a>
+  <a href="#precios" onclick="closeMob()">Precios</a>
+  <a href="#proceso" onclick="closeMob()">Proceso</a>
+  <a href="#contacto" onclick="closeMob()">Contacto</a>
+  <div class="mob-divider"></div>
+  <a href="login.html" onclick="closeMob()" class="mob-link-plain">Iniciar sesión</a>
+  <a href="register.html" onclick="closeMob()" class="mob-link-cta">Empezar gratis 🚀</a>
+</div>
+
+<nav><div class="nav-glass">
+  <a href="#" class="nav-logo">
+    <svg class="nav-rocket-svg" viewBox="0 0 32 32" fill="none">
+      <path d="M16 3C16 3 22 8 22 17L16 22L10 17C10 8 16 3 16 3Z" fill="#1a1612"/>
+      <circle cx="16" cy="13" r="2.5" fill="#f5f0e8" opacity=".85"/>
+      <path d="M10 17L7 22L12 20Z" fill="#1a1612"/>
+      <path d="M22 17L25 22L20 20Z" fill="#1a1612"/>
+      <ellipse class="flame f1" cx="16" cy="24" rx="2.5" ry="3.5" fill="#e8a020" opacity=".9"/>
+      <ellipse class="flame f2" cx="16" cy="25.5" rx="1.5" ry="2.5" fill="#f5d060" opacity=".8"/>
+    </svg>
+    <span class="nav-logo-text">Rocket X</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#servicios">Servicios</a></li>
+    <li><a href="#numeros">Nosotros</a></li>
+    <li><a href="#precios">Precios</a></li>
+    <li><a href="#proceso">Proceso</a></li>
+  </ul>
+  <div class="nav-actions">
+    <a href="login.html" class="nav-login">Iniciar sesión</a>
+    <a href="register.html" class="nav-cta-btn">Empezar 🚀</a>
+  </div>
+  <div class="ham" id="ham" onclick="toggleMob()"><span></span><span></span><span></span></div>
+</div></nav>
+
+<section id="hero">
+  <div class="hero-top"><p class="hero-tag">✦ Agencia de marketing digital · Est. 2024</p></div>
+  <div class="hero-mid">
+    <div class="hero-title-row">
+      <h1 class="hero-h">Tu marca,<br/><em>amplificada.</em></h1>
+      <div class="hero-rocket-wrap">
+        <svg class="hero-rocket-svg" viewBox="0 0 80 100" fill="none">
+          <path d="M40 5C40 5 58 22 58 52L40 65L22 52C22 22 40 5 40 5Z" fill="#1a1612"/>
+          <path d="M40 5C40 5 50 18 52 38C48 32 42 26 40 5Z" fill="white" opacity=".08"/>
+          <circle cx="40" cy="36" r="7" fill="#f5f0e8" opacity=".9"/>
+          <circle cx="40" cy="36" r="4.5" fill="#ddd6c8" opacity=".6"/>
+          <path d="M22 52L14 68L28 62Z" fill="#1a1612"/>
+          <path d="M58 52L66 68L52 62Z" fill="#1a1612"/>
+          <ellipse class="flame fo" cx="40" cy="72" rx="7" ry="10" fill="#d97706" opacity=".9"/>
+          <ellipse class="flame fm" cx="40" cy="74" rx="4.5" ry="7" fill="#fbbf24" opacity=".85"/>
+          <ellipse class="flame fi" cx="40" cy="76" rx="2.5" ry="4.5" fill="#fef3c7" opacity=".9"/>
+          <circle class="spark sp1" cx="33" cy="84" r="1.5" fill="#fbbf24" opacity=".7"/>
+          <circle class="spark sp2" cx="47" cy="87" r="1" fill="#f59e0b" opacity=".6"/>
+          <circle class="spark sp3" cx="38" cy="90" r="1.2" fill="#fef3c7" opacity=".5"/>
+        </svg>
+        <div class="rocket-stars"><span class="rstar s1">✦</span><span class="rstar s2">·</span><span class="rstar s3">✦</span><span class="rstar s4">·</span><span class="rstar s5">✦</span></div>
+      </div>
+    </div>
+    <div class="hero-badges">
+      <span class="hero-badge">🎨 Diseño Gráfico</span><span class="hero-badge">🎬 Video</span>
+      <span class="hero-badge">📸 Fotografía</span><span class="hero-badge">💻 Webs</span>
+      <span class="hero-badge">📱 Social Media</span>
+    </div>
+  </div>
+  <div class="hero-bottom">
+    <div>
+      <p class="hero-sub">Diseño, video, fotografía y webs que generan resultados reales. Sin ruido, solo impacto. 🎯</p>
+      <div class="hero-ctas">
+        <a href="register.html" class="btn btn-dark">Empezar gratis 🚀</a>
+        <a href="#servicios" class="btn btn-ghost">Ver servicios ↓</a>
+      </div>
+    </div>
+    <div class="hero-mini-stats">
+      <div class="hstat"><span class="hstat-val">+150</span><span class="hstat-lbl">Proyectos</span></div>
+      <div class="hstat"><span class="hstat-val">98%</span><span class="hstat-lbl">Satisfechos</span></div>
+      <div class="hstat"><span class="hstat-val">3×</span><span class="hstat-lbl">ROI medio</span></div>
+    </div>
+  </div>
+</section>
+
+<div class="strip"><div class="strip-track">
+  <span class="strip-item">🎨 Diseño Gráfico</span><span class="strip-item">🎬 Edición de Video</span>
+  <span class="strip-item">📸 Fotografía</span><span class="strip-item">💻 Web Design</span>
+  <span class="strip-item">✦ Branding</span><span class="strip-item">📱 Social Media</span>
+  <span class="strip-item">🎨 Diseño Gráfico</span><span class="strip-item">🎬 Edición de Video</span>
+  <span class="strip-item">📸 Fotografía</span><span class="strip-item">💻 Web Design</span>
+  <span class="strip-item">✦ Branding</span><span class="strip-item">📱 Social Media</span>
+</div></div>
+
+<section id="servicios"><div class="wrap">
+  <div class="svc-head reveal"><div><p class="sec-label">// Servicios</p><h2 class="sec-h">Lo que<br/><em>hacemos</em></h2></div><p class="sec-p">Cuatro disciplinas que construyen marcas memorables y presencias digitales que convierten. ✨</p></div>
+  <div class="reveal">
+    <div class="svc-row"><span class="svc-ico">🎨</span><span class="svc-name">Diseño Gráfico</span><span class="svc-desc">Identidad visual, branding y materiales que comunican quiénes eres.</span><span class="svc-arrow">↗</span></div>
+    <div class="svc-row"><span class="svc-ico">🎬</span><span class="svc-name">Edición de Video</span><span class="svc-desc">Reels, spots y contenido audiovisual de alto impacto para tus redes.</span><span class="svc-arrow">↗</span></div>
+    <div class="svc-row"><span class="svc-ico">📸</span><span class="svc-name">Fotografía</span><span class="svc-desc">Producto, corporativa y lifestyle. Imágenes que permanecen en la memoria.</span><span class="svc-arrow">↗</span></div>
+    <div class="svc-row"><span class="svc-ico">💻</span><span class="svc-name">Páginas Web</span><span class="svc-desc">Sitios rápidos, modernos y con integraciones reales. Hechos para crecer.</span><span class="svc-arrow">↗</span></div>
+  </div>
+</div></section>
+
+<section id="numeros"><div class="wrap"><div class="nums-grid reveal">
+  <div class="num-item"><div class="num-val">+150</div><div class="num-lbl">Proyectos entregados 🚀</div></div>
+  <div class="num-item"><div class="num-val">98%</div><div class="num-lbl">Clientes satisfechos ✅</div></div>
+  <div class="num-item"><div class="num-val">3×</div><div class="num-lbl">ROI promedio 📈</div></div>
+  <div class="num-item"><div class="num-val">24h</div><div class="num-lbl">Tiempo de respuesta ⚡</div></div>
+</div></div></section>
+
+<section id="precios"><div class="wrap">
+  <div class="pricing-head reveal"><p class="sec-label">// Planes</p><h2 class="sec-h">Elige tu<br/><em>suscripción</em></h2></div>
+  <div class="plans reveal">
+    <div class="plan"><p class="plan-tier">01 — Starter 🌱</p><h3 class="plan-name">Básico</h3><div class="plan-price">$99</div><p class="plan-period">/ mes · facturado mensual</p><div class="plan-line"></div><ul class="plan-features"><li>4 diseños gráficos / mes</li><li>1 video corto editado</li><li>2 sesiones de fotos</li><li>Soporte por email</li><li>Entrega en 5 días hábiles</li></ul><a href="register.html" class="plan-btn">Empezar →</a></div>
+    <div class="plan featured"><p class="plan-tier">02 — Pro ⭐</p><h3 class="plan-name">Pro</h3><div class="plan-price">$300</div><p class="plan-period">/ mes · facturado mensual</p><div class="plan-line"></div><ul class="plan-features"><li>12 diseños gráficos / mes</li><li>4 videos editados premium</li><li>Fotos ilimitadas</li><li>1 página web incluida</li><li>Soporte 24/7</li><li>Entrega en 2 días hábiles</li></ul><a href="register.html" class="plan-btn">Empezar →</a></div>
+    <div class="plan"><p class="plan-tier">03 — Business 👑</p><h3 class="plan-name">Elite</h3><div class="plan-price">$799</div><p class="plan-period">/ mes · facturado mensual</p><div class="plan-line"></div><ul class="plan-features"><li>Todo ilimitado</li><li>Producción audiovisual full</li><li>Web + mantenimiento</li><li>Manager dedicado</li><li>Entrega en 24 horas</li></ul><a href="register.html" class="plan-btn">Empezar →</a></div>
+  </div>
+  <p class="pay-note">💳 Pagos seguros via PayPal · Cancela cuando quieras · Sin permanencia</p>
+</div></section>
+
+<section id="proceso"><div class="wrap">
+  <div class="proc-head reveal"><p class="sec-label">// Proceso</p><h2 class="sec-h">Cómo<br/><em>trabajamos</em></h2></div>
+  <div class="reveal">
+    <div class="proc-row"><p class="proc-num">01</p><h3 class="proc-title">🤝 Brief & Descubrimiento</h3><p class="proc-desc">Entendemos tu marca, audiencia y objetivos antes de hacer cualquier cosa.</p></div>
+    <div class="proc-row"><p class="proc-num">02</p><h3 class="proc-title">💡 Estrategia & Concepto</h3><p class="proc-desc">Desarrollamos la dirección creativa correcta. Con criterio, no intuición.</p></div>
+    <div class="proc-row"><p class="proc-num">03</p><h3 class="proc-title">🎨 Diseño & Producción</h3><p class="proc-desc">Ejecutamos. Iteramos. Entregamos cuando está perfecto, no antes.</p></div>
+    <div class="proc-row"><p class="proc-num">04</p><h3 class="proc-title">🚀 Entrega & Soporte</h3><p class="proc-desc">Acompañamiento continuo. No desaparecemos después de entregar.</p></div>
+  </div>
+</div></section>
+
+<section id="resenas"><div class="wrap">
+  <div class="resenas-head reveal">
+    <div><p class="sec-label">// Reseñas</p><h2 class="sec-h">Lo que dicen<br/><em>nuestros clientes</em></h2></div>
+    <div class="trust-score"><div class="trust-stars">★★★★★</div><div class="trust-num">4.9 <span>/ 5.0</span></div><div class="trust-label">Basado en 148 reseñas ✅</div></div>
+  </div>
+  <div class="resenas-grid reveal">
+    <div class="resena-card"><div class="resena-stars">★★★★★</div><p class="resena-text">"El equipo de Rocket X transformó nuestra presencia digital por completo. El diseño es increíble y los resultados hablan solos. 100% recomendado." 🔥</p><div class="resena-author"><div class="resena-avatar">MR</div><div><div class="resena-name">María Rodríguez</div><div class="resena-role">CEO · StyleCo</div></div><div class="resena-verified">✓ Verificado</div></div></div>
+    <div class="resena-card featured-review"><div class="resena-stars">★★★★★</div><p class="resena-text">"Contratamos el plan Pro y en 2 meses triplicamos nuestro tráfico web. La web que nos hicieron es rápida, bonita y convierte de verdad." 📈</p><div class="resena-author"><div class="resena-avatar">CL</div><div><div class="resena-name">Carlos López</div><div class="resena-role">Fundador · NexGen</div></div><div class="resena-verified">✓ Verificado</div></div></div>
+    <div class="resena-card"><div class="resena-stars">★★★★★</div><p class="resena-text">"Los reels que editan para nuestras redes tienen una calidad cinematográfica. Nuestros seguidores aumentaron un 340% en 3 meses." 🎬</p><div class="resena-author"><div class="resena-avatar">AG</div><div><div class="resena-name">Ana García</div><div class="resena-role">Marketing · FitLife</div></div><div class="resena-verified">✓ Verificado</div></div></div>
+    <div class="resena-card"><div class="resena-stars">★★★★★</div><p class="resena-text">"Responden en menos de 1 hora y siempre entregan antes del plazo. El branding quedó exactamente como lo imaginaba." ✨</p><div class="resena-author"><div class="resena-avatar">JP</div><div><div class="resena-name">Jorge Pérez</div><div class="resena-role">Director · Aurum</div></div><div class="resena-verified">✓ Verificado</div></div></div>
+    <div class="resena-card"><div class="resena-stars">★★★★★</div><p class="resena-text">"Las fotos de producto superaron todas las expectativas. Desde que las usamos las ventas online subieron un 60%." 📸</p><div class="resena-author"><div class="resena-avatar">LM</div><div><div class="resena-name">Laura Martínez</div><div class="resena-role">Fundadora · Bloom</div></div><div class="resena-verified">✓ Verificado</div></div></div>
+    <div class="resena-card"><div class="resena-stars">★★★★★</div><p class="resena-text">"Llevamos 8 meses con el plan Elite y no cambiaríamos a nadie más. El manager dedicado conoce nuestro negocio a la perfección." 👑</p><div class="resena-author"><div class="resena-avatar">DS</div><div><div class="resena-name">Diego Sánchez</div><div class="resena-role">COO · TechVault</div></div><div class="resena-verified">✓ Verificado</div></div></div>
+  </div>
+</div></section>
+
+<section id="contacto"><div class="wrap"><div class="cta-inner reveal">
+  <div class="cta-top">
+    <h2 class="cta-h">¿Listo para <em>despegar?</em></h2>
+    <svg class="cta-logo-svg" viewBox="0 0 80 100" fill="none">
+      <path d="M40 5C40 5 58 22 58 52L40 65L22 52C22 22 40 5 40 5Z" fill="#f5f0e8"/>
+      <path d="M40 5C40 5 50 18 52 38C48 32 42 26 40 5Z" fill="white" opacity=".12"/>
+      <circle cx="40" cy="36" r="7" fill="#1a1612" opacity=".4"/>
+      <path d="M22 52L14 68L28 62Z" fill="#f5f0e8"/>
+      <path d="M58 52L66 68L52 62Z" fill="#f5f0e8"/>
+      <ellipse class="cflame fo" cx="40" cy="72" rx="7" ry="10" fill="#d97706" opacity=".9"/>
+      <ellipse class="cflame fm" cx="40" cy="74" rx="4.5" ry="7" fill="#fbbf24" opacity=".85"/>
+      <ellipse class="cflame fi" cx="40" cy="76" rx="2.5" ry="4.5" fill="#fef3c7" opacity=".9"/>
+      <circle class="cspark sp1" cx="33" cy="84" r="1.5" fill="#fbbf24" opacity=".7"/>
+      <circle class="cspark sp2" cx="47" cy="87" r="1" fill="#f59e0b" opacity=".6"/>
+      <circle class="cspark sp3" cx="38" cy="90" r="1.2" fill="#fef3c7" opacity=".5"/>
+    </svg>
+  </div>
+  <div class="cta-row">
+    <a href="register.html" class="btn btn-cream">Crear cuenta gratis →</a>
+    <a href="login.html" class="btn btn-outline-cream">Ya tengo cuenta</a>
+    <p class="cta-mail"><a href="mailto:hola@rocketx.agency">hola@rocketx.agency</a></p>
+  </div>
+</div></div></section>
+
+<footer>
+  <a href="#" class="f-logo">🚀 Rocket X</a>
+  <ul class="f-links"><li><a href="#servicios">Servicios</a></li><li><a href="#precios">Precios</a></li><li><a href="login.html">Login</a></li><li><a href="register.html">Registro</a></li></ul>
+  <p class="f-copy">© 2024 Rocket X · Supabase · PayPal · Node.js</p>
+</footer>
+
+<script src="main.js"></script>
+</body>
+</html>
